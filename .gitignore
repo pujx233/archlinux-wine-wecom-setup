@@ -1,0 +1,17 @@
+# Third-party materials and locally generated archives are not stored in Git history.
+/assets/
+/dist/
+/wecom-wine-diagnostics/
+*.log
+*.dmp
+*.bak
+*.obj
+*.pdb
+__pycache__/
+*.pyc
+.DS_Store
+
+# The two small, source-included Windows helpers are intentional.
+*.exe
+!/scripts/status-font-probe.exe
+!/scripts/titlebar-managed.exe

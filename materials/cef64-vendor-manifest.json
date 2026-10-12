@@ -1,0 +1,452 @@
+{
+  "version": "5.0.79.5483",
+  "file_group": {
+    "5.0.79.5483\\cef\\adj.dll": {
+      "version": "",
+      "size": "100688",
+      "md5": "0b081ce9db003d860b9915e9f2c361e6"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-com-l1-1-0.dll": {
+      "version": "10.0.19041.1",
+      "size": "15888",
+      "md5": "52e6a06268df219f4e519477fdbe58cd"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-console-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22120",
+      "md5": "7b935c9ae42987ee708c6ce78d1b2518"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-console-l1-2-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "94d959079a8626399a1c7ed25022faa7"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-datetime-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "08ef9bdae2b9735a3bf96fef13870fc1"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-debug-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "c80dd5101f826344f3fff3d7b820895e"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-errorhandling-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "0b05060480bc0853f3f6909bbd61650a"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-fibers-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22024",
+      "md5": "f5298e3aa379b8ace38a91a6b878aa35"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-file-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "26216",
+      "md5": "47bfcf04756b8a406c92370e36be2d29"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-file-l1-2-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "288b9d17e7c4bbae97d42ad0b8ec4702"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-file-l2-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "0027fe52dfda7961ae1b2a4b10fc4d89"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-handle-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22120",
+      "md5": "3962fa10eeaa9a4be06f561fde300bcd"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-heap-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22024",
+      "md5": "523aac716f2cde63a9b6896d8ea41e69"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-interlocked-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22120",
+      "md5": "47b5059914ff6ac540f1e239833c8614"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-libraryloader-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "e93fec249ae56a1bf5121e51fddd8e95"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-localization-l1-2-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "7d813a9d4f1ba0caf55b01f7ec70dcea"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-memory-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22120",
+      "md5": "4ac8338d1a3346fd09f1e04fc7706170"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-namedpipe-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22112",
+      "md5": "9064556f7a4bcde3e7164c57772cc0a7"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-processenvironment-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22112",
+      "md5": "c4eb89da5c3eac728c5e30c9aa67c006"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-processthreads-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "f2d45a9e419858a3c7adf4996d45de0a"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-processthreads-l1-1-1.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "8c296f1f54e8c9f38659fd8e09598422"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-profile-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22024",
+      "md5": "f9ceff9c92bc368779c370facfef5714"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-rtlsupport-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "61503240436af5c68800410400a21e73"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-string-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22024",
+      "md5": "53c39dbdc253aa94fc46f79e808e759e"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-synch-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "a4cac886f35c6a9323f1fbd38d146d0e"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-synch-l1-2-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "63f2089a20409f482afd867774cef9ce"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-sysinfo-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "2c17df3b2df2bdc7c11ef0005644c197"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-sysinfo-l1-2-0.dll": {
+      "version": "10.0.22621.1",
+      "size": "21840",
+      "md5": "bb5f9ff2bc9e3c59ffb951ebe770b533"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-sysinfo-l1-2-1.dll": {
+      "version": "10.0.22621.1",
+      "size": "21848",
+      "md5": "4b321305f16a29c6495a74f1c8d87557"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-timezone-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "8c25466f5ba604f62d08cc06d2616c09"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-core-util-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "7aee6243119a2fc903ec1bc92b55c44c"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-conio-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22008",
+      "md5": "2d28ea60cd0128c33b890f7f26a05562"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-convert-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "26224",
+      "md5": "9f812bd3815909e559b15cb13489f294"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-environment-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22120",
+      "md5": "1a72e5f24214eb723e03a22ff53f8a22"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-filesystem-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "424e91010bc4854e42d07b7bf5780b9e"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-heap-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "9d136bbecf98a931e6371346059b5626"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-locale-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22120",
+      "md5": "a60da494b43fe2fe64a0169bbff526df"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-math-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "30312",
+      "md5": "3cba829d7347d2133770ba03a6636459"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-multibyte-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "30320",
+      "md5": "dd8127069a45b950241655185be544b8"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-private-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "75368",
+      "md5": "ae01489c6e2e70840e47e67dc60f3389"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-process-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "eebe36a1ac46bcb0947bc3f8a3ca5b9b"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-runtime-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "26224",
+      "md5": "6b39d005deb6c5ef2c9dd9e013b32252"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-stdio-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "26224",
+      "md5": "97f24295c9bd6e1acae0c391e68a64cf"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-string-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "26216",
+      "md5": "d282a4fa046d05d40d138cc68c518914"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-time-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22128",
+      "md5": "6d35a57a6d8d569f870b96e00e7f1f4d"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-crt-utility-l1-1-0.dll": {
+      "version": "10.0.22621.2428",
+      "size": "22008",
+      "md5": "8ed70910380aa0b28317512d72762cc0"
+    },
+    "5.0.79.5483\\cef\\api-ms-win-downlevel-kernel32-l2-1-0.dll": {
+      "version": "10.0.22621.755",
+      "size": "16384",
+      "md5": "f3d6861beb6de5ea78d6f84b4f02d64b"
+    },
+    "5.0.79.5483\\cef\\chrome_100_percent.pak": {
+      "version": "",
+      "size": "695350",
+      "md5": "315618a9e00e46ff870d9c0de2509121"
+    },
+    "5.0.79.5483\\cef\\chrome_200_percent.pak": {
+      "version": "",
+      "size": "1095032",
+      "md5": "6c5b88cb407f1e109fd5e8efc759022c"
+    },
+    "5.0.79.5483\\cef\\chrome_elf.dll": {
+      "version": "129.0.6668.101",
+      "size": "1366064",
+      "md5": "85e22b0b9ce43e33a2d0cd437ea7ae2c"
+    },
+    "5.0.79.5483\\cef\\client_extension.dll": {
+      "version": "",
+      "size": "432744",
+      "md5": "fa9610150e365fcb964d433693acd267"
+    },
+    "5.0.79.5483\\cef\\concrt140.dll": {
+      "version": "14.38.33130.0",
+      "size": "322640",
+      "md5": "e6d7ff1c7c1311a9011f1039639adc3d"
+    },
+    "5.0.79.5483\\cef\\crash_reporter.cfg": {
+      "version": "",
+      "size": "336",
+      "md5": "d84e09ae13fbb0a4b45d45fdf04214ab"
+    },
+    "5.0.79.5483\\cef\\d3dcompiler_47.dll": {
+      "version": "10.0.22621.3233",
+      "size": "4917344",
+      "md5": "42cf7826ffb8ceb84f2cc869142eafe6"
+    },
+    "5.0.79.5483\\cef\\dbghelp.dll": {
+      "version": "10.0.22621.1778",
+      "size": "2180616",
+      "md5": "68e66b04c1d3289b0cc96391060c922a"
+    },
+    "5.0.79.5483\\cef\\icudtl.dat": {
+      "version": "",
+      "size": "10468208",
+      "md5": "ffd67c1e24cb35dc109a24024b1ba7ec"
+    },
+    "5.0.79.5483\\cef\\libcef.dll": {
+      "version": "129.0.12.0",
+      "size": "242389040",
+      "md5": "833d56dd4f31e82bc068f839138cc93a"
+    },
+    "5.0.79.5483\\cef\\libEGL.dll": {
+      "version": "2.1.23691.0",
+      "size": "505392",
+      "md5": "1a15d43298e025481bf1395e345b53f2"
+    },
+    "5.0.79.5483\\cef\\libGLESv2.dll": {
+      "version": "2.1.23691.0",
+      "size": "8258600",
+      "md5": "dec89ce52532198f88adbaeb5b2ff723"
+    },
+    "5.0.79.5483\\cef\\locales\\de.pak": {
+      "version": "",
+      "size": "616179",
+      "md5": "704b54c396c595ca784298da38cd6ad5"
+    },
+    "5.0.79.5483\\cef\\locales\\en-US.pak": {
+      "version": "",
+      "size": "501594",
+      "md5": "fda63a59f6f00864ff7b4992b994df92"
+    },
+    "5.0.79.5483\\cef\\locales\\es.pak": {
+      "version": "",
+      "size": "602489",
+      "md5": "5858c3fadf329abcaa8d8bfda3a7f656"
+    },
+    "5.0.79.5483\\cef\\locales\\fil.pak": {
+      "version": "",
+      "size": "630739",
+      "md5": "adf7359b1463aaeb212814895d4edc3c"
+    },
+    "5.0.79.5483\\cef\\locales\\id.pak": {
+      "version": "",
+      "size": "540440",
+      "md5": "eabb77fd43a970bf54448a838e723d69"
+    },
+    "5.0.79.5483\\cef\\locales\\ja.pak": {
+      "version": "",
+      "size": "726444",
+      "md5": "8f2bb29cbd0e8349c8cd0f3327991252"
+    },
+    "5.0.79.5483\\cef\\locales\\ms.pak": {
+      "version": "",
+      "size": "565680",
+      "md5": "79ab0c7d3e3400c7faf0fd21e1fcc88b"
+    },
+    "5.0.79.5483\\cef\\locales\\th.pak": {
+      "version": "",
+      "size": "1156886",
+      "md5": "64fdd09e0a67852c6e0d97938ddc6d00"
+    },
+    "5.0.79.5483\\cef\\locales\\vi.pak": {
+      "version": "",
+      "size": "702568",
+      "md5": "af7eee31b7334a0b40aad6e1e87755d1"
+    },
+    "5.0.79.5483\\cef\\locales\\zh-CN.pak": {
+      "version": "",
+      "size": "508340",
+      "md5": "8cd1652783b0ed2163607c81f5be2ee3"
+    },
+    "5.0.79.5483\\cef\\minidump.exe": {
+      "version": "",
+      "size": "26448",
+      "md5": "76b3172a180f150eb60386ce573a7d28"
+    },
+    "5.0.79.5483\\cef\\msvcp140.dll": {
+      "version": "14.38.33130.0",
+      "size": "573008",
+      "md5": "ebf8072a3c5c586979313f76e503aabf"
+    },
+    "5.0.79.5483\\cef\\msvcp140_1.dll": {
+      "version": "14.38.33130.0",
+      "size": "35920",
+      "md5": "11d5d26552c1730ccc440f13a1fce188"
+    },
+    "5.0.79.5483\\cef\\msvcp140_2.dll": {
+      "version": "14.38.33130.0",
+      "size": "268264",
+      "md5": "718e5c4a63d2f941eeb1b4e9d6d85a8c"
+    },
+    "5.0.79.5483\\cef\\msvcp140_atomic_wait.dll": {
+      "version": "14.38.33130.0",
+      "size": "50256",
+      "md5": "f9c7a19dfc5fa60b1405c81208bd959b"
+    },
+    "5.0.79.5483\\cef\\msvcp140_codecvt_ids.dll": {
+      "version": "14.38.33130.0",
+      "size": "31848",
+      "md5": "0f4e5f6c68c514e63c4cdae9eb9e40f5"
+    },
+    "5.0.79.5483\\cef\\resources.pak": {
+      "version": "",
+      "size": "8820935",
+      "md5": "85d11265794c1965f14b7b43a422727a"
+    },
+    "5.0.79.5483\\cef\\snapshot_blob.bin": {
+      "version": "",
+      "size": "316942",
+      "md5": "94b497c5687251833245dbe381f49f66"
+    },
+    "5.0.79.5483\\cef\\tinyxml.dll": {
+      "version": "",
+      "size": "769416",
+      "md5": "2e56d1d5aa49591ca4665daca8c24050"
+    },
+    "5.0.79.5483\\cef\\TxBugReport.exe": {
+      "version": "",
+      "size": "383080",
+      "md5": "78e7819902ac6b98c2d1bc5b27d724be"
+    },
+    "5.0.79.5483\\cef\\ucrtbase.dll": {
+      "version": "10.0.22621.2428",
+      "size": "1123952",
+      "md5": "81a97c377cb9fccf0a84ff1024f50904"
+    },
+    "5.0.79.5483\\cef\\v8_context_snapshot.bin": {
+      "version": "",
+      "size": "690197",
+      "md5": "c33d846873bdf637215059773be7914a"
+    },
+    "5.0.79.5483\\cef\\vccorlib140.dll": {
+      "version": "14.38.33130.0",
+      "size": "348784",
+      "md5": "22a66d8309244779b8a7f275a3ff5cbb"
+    },
+    "5.0.79.5483\\cef\\vcruntime140.dll": {
+      "version": "14.38.33130.0",
+      "size": "119376",
+      "md5": "699dd61122d91e80abdfcc396ce0ec10"
+    },
+    "5.0.79.5483\\cef\\vcruntime140_1.dll": {
+      "version": "14.38.33130.0",
+      "size": "49776",
+      "md5": "9410ee0771ff1c2007d9087a8c316a4b"
+    },
+    "5.0.79.5483\\cef\\vcruntime140_threads.dll": {
+      "version": "14.38.33130.0",
+      "size": "38480",
+      "md5": "268036dfa28320d2186b9b21631d443d"
+    },
+    "5.0.79.5483\\cef\\vk_swiftshader.dll": {
+      "version": "5.0.0.1",
+      "size": "5333032",
+      "md5": "1b945d80f12844716d1b6ec86bad6712"
+    },
+    "5.0.79.5483\\cef\\vk_swiftshader_icd.json": {
+      "version": "",
+      "size": "106",
+      "md5": "8642dd3a87e2de6e991fae08458e302b"
+    },
+    "5.0.79.5483\\cef\\vulkan-1.dll": {
+      "version": "1.3.293.0",
+      "size": "898608",
+      "md5": "f5b6173de5a2ce631160e292443dfff3"
+    },
+    "5.0.79.5483\\cef\\WXWorkWeb.exe": {
+      "version": "5.0.79.5483",
+      "size": "4078872",
+      "md5": "650992fc6e042c3333496def0cf83374"
+    }
+  },
+  "signature": "JwvNSHKuddpRNvbE3Yrv9UXwS5njcZbPkuNCWemMBcLqAAS8HCq607+Wey/Jg2MbDXyvUrZIaUJZt++iJkfp/ugxxrDyr8RG6HR6CuaV0EBixtGjGUPYg1UOIUnFk4fov1iPJjmQQPJbzMRn/Pc2SqG6ZlU33Qq1+mPFopbsNuE=",
+  "signature_new": "ml8UpnuriUc9JmfFuEF6zKGFC4bOfRPjvyUxnRUHEVGwDvfLUmH0Aptn6yv6qAuxBjnQIPa4LoC0szHUYmAI4yWpRBw9Tnz9L5T8q+RYGPRAjhCT1Wd0w4vcw0ejz5N4aGQcrltW9ogBo0Ikr5QypMK0ArHRyzAcs4zUq9YVfKThCyvKCYLwuAIA0evMZ6yTLRRwYTc5k+mlFwRpZDh6L0EGzZWYQvTg+UU57NRYZS9U6f8OJnDqFe4V/z3Gzxxjrda1bH8V8lSk+59a4CABRsAwqG0PkaptxtfEw892n68pPQB4eZ7nGv1XOJexmkR9VrP8YYShGqK6goHdACZEi2y2cqnXTIGNW3bY6inw8tY1T5tGaAhHzfnSqrKDepV87yAwKqDhA4NgP7E9petyctLLEW3ucTPamAvTsjg/k4rtjoE18Zj309lA4/Pn40QK96rvNP1D2lxxWiwziw/skIUi00e8BNo5otCKJPS/u5AlfihG+O710SX8BkWn0joWYqqHbavqWWcplvuFc9QKO7aSYsuqYov8YTQhxD2Mz85slVAHjU3yiI3jfdW8duRh5vbQwVSOcN2xkbY9Nl/LM/TwJOKE+6qH9P0QNR7CtadY49X4SBEusI7QAWxxb4fUQ/FI6zn1yK9O2q+/B35yR/2hxFAkqG9GFY0hFG8rR44="
+}

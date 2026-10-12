@@ -1,0 +1,150 @@
+{
+  "date": "2026-10-12",
+  "environment": {
+    "wine": "11.19",
+    "architecture": "win64",
+    "wecom": "5.0.11.6018",
+    "cef": "5.0.79.5483",
+    "winetricks": "20260125-next",
+    "winetricks_sha256": "672a1ff4442e8691a3ffc0e6860137e201a1d1227e9b3044245f1731e9e9837e"
+  },
+  "isolation": {
+    "fresh_prefix": true,
+    "application_files_only_copied": true,
+    "account_login": "manual",
+    "normal_prefix_files_compared": 391,
+    "normal_prefix_files_changed": 0
+  },
+  "verbs": [
+    "vcrun2022",
+    "ucrtbase2019",
+    "riched30",
+    "d3dcompiler_47",
+    "corefonts",
+    "calibri",
+    "consolas",
+    "tahoma",
+    "micross"
+  ],
+  "installed_files": [
+    {
+      "path": "windows/syswow64/msvcp140.dll",
+      "version": "14.44.35211.0",
+      "sha256": "97e71a3c697fb1ab3af777db39009e4602525e8c3aff0837ecc7031cba188165"
+    },
+    {
+      "path": "windows/syswow64/vcruntime140_threads.dll",
+      "version": "14.44.35211.0",
+      "sha256": "bb2b1d16187562376fc888059e2cbbf26c5404f6a4bb7197d1d01b970f199667"
+    },
+    {
+      "path": "windows/syswow64/ucrtbase.dll",
+      "version": "10.0.10586.15",
+      "sha256": "66a93e40dd6721ded8a32d407d2c5fc291edaf74485ccbc848b6804efebd6dba"
+    },
+    {
+      "path": "windows/syswow64/d3dcompiler_47.dll",
+      "version": "6.3.9600.16384",
+      "sha256": "efbdbbcd0d954f8fdc53467de5d89ad525e4e4a9cfff8a15d07c6fdb350c407f"
+    },
+    {
+      "path": "windows/syswow64/riched20.dll",
+      "version": "5.30.23.1200",
+      "sha256": "1c2508fb55ddc459d0327f2017471545c87420443391567094e768fb34032da1"
+    },
+    {
+      "path": "windows/syswow64/msls31.dll",
+      "version": "3.10.337.0",
+      "sha256": "841fde9b24476a7ed364a3e4a1470ac9b7358bc92f29fca4a06aab557d140850"
+    },
+    {
+      "path": "windows/system32/msvcp140.dll",
+      "version": "14.44.35211.0",
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    {
+      "path": "windows/system32/vcruntime140_threads.dll",
+      "version": "14.44.35211.0",
+      "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+    },
+    {
+      "path": "windows/system32/ucrtbase.dll",
+      "version": "10.0.10586.15",
+      "sha256": "51cbbde17a768930300236facd9738f54b7801e6715771ff8af90bfbe3fad44f"
+    },
+    {
+      "path": "windows/system32/d3dcompiler_47.dll",
+      "version": "6.3.9600.16384",
+      "sha256": "e994847e01a6f1e4cbdc5a864616ac262f67ee4f14db194984661a8d927ab7f4"
+    }
+  ],
+  "initial_failure": {
+    "main": "App-local runtime redirects in external manifest prevented launch after DLL removal.",
+    "mail_and_documents": "WeMail embedded manifest prevented fallback to system32/syswow64; Wine reported c0000135.",
+    "workbench": "User confirmed normal.",
+    "recovery": "Copying the nine installed x86 runtime files into wemail restored mail and documents; user confirmed Chinese input and display."
+  },
+  "final_configuration": {
+    "main_and_wemail": "Original installer DLLs and original external manifest retained.",
+    "cef_excluded_files": [
+      "concrt140.dll",
+      "d3dcompiler_47.dll",
+      "msvcp140.dll",
+      "msvcp140_1.dll",
+      "msvcp140_2.dll",
+      "msvcp140_atomic_wait.dll",
+      "msvcp140_codecvt_ids.dll",
+      "ucrtbase.dll",
+      "vccorlib140.dll",
+      "vcruntime140.dll",
+      "vcruntime140_threads.dll"
+    ],
+    "cef_retained_exception": "vcruntime140_1.dll (vendor native; tested vcrun2022 left Wine builtin in system32)",
+    "fonts": "winetricks Western fonts plus original four Adobe CN OTFs and project font mappings/StatusFont",
+    "input": "Unchanged project IME bridge"
+  },
+  "actual_loaded_modules": {
+    "WXWork.exe": [
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/msvcp140.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/msvcp140_atomic_wait.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/msvcp140_codecvt_ids.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/ucrtbase.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/vcruntime140.dll",
+      "drive_c/windows/syswow64/riched20.dll",
+      "wecom-compat/scripts/ime-bridge.so"
+    ],
+    "WXWorkWeb.exe": [
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/compatible_web/libcef.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/compatible_web/vcruntime140_1.dll",
+      "drive_c/windows/system32/d3dcompiler_47.dll",
+      "drive_c/windows/system32/msvcp140.dll",
+      "drive_c/windows/system32/ucrtbase.dll",
+      "drive_c/windows/system32/vcruntime140.dll",
+      "wecom-compat/scripts/ime-bridge.so"
+    ],
+    "WeMail.exe": [
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/wemail/msvcp140.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/wemail/msvcp140_1.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/wemail/ucrtbase.dll",
+      "drive_c/Program Files (x86)/WXWork/5.0.11.6018/wemail/vcruntime140.dll",
+      "wecom-compat/scripts/ime-bridge.so"
+    ]
+  },
+  "results": {
+    "winetricks_install_exit": 0,
+    "x86_x64_load_probes": "pass before UI tests; not sufficient to detect application manifest redirects",
+    "initial_recovery_user_check": "Mail, documents, workbench, chat, Chinese input and display passed.",
+    "final_restart_user_check": "Mail, documents and workbench pages and Chinese input passed.",
+    "final_module_loader_errors": 0,
+    "diagnostic_launcher_restored": true,
+    "test_prefix_stopped": true
+  },
+  "not_tested": [
+    "Running the WeCom installer from scratch",
+    "Sending mail or chat messages",
+    "Submitting approvals",
+    "Meetings and bundled Python/plugins",
+    "Long-term stability",
+    "Other Wine or winetricks versions"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "filename": "wecom-cef-x64-5.0.79.5483-winetricks.tar.xz",
+  "sha256": "9a8b942772d3e505fc34dac4e398ff355f9e4f5016fc91e530a104bca38413a5",
+  "compressed_bytes": 112046100,
+  "uncompressed_file_bytes": 296505521,
+  "file_count": 78,
+  "archive_path": "assets/cef/",
+  "component": "5.0.79.5483",
+  "chromium": "129.0.6668.101",
+  "architecture": "x86_64",
+  "wecom_verified": "5.0.11.6018",
+  "source": "Tencent vendor component; 11 verified winetricks runtime files omitted, all retained files unmodified",
+  "manifest": "materials/cef64-vendor-manifest.json",
+  "excludes": [
+    "fonts",
+    "standalone RichEdit",
+    "installers",
+    "Wine prefix",
+    "account data",
+    "logs",
+    "11 CEF runtimes supplied by winetricks"
+  ],
+  "profile": "materials/cef64-winetricks-profile.json",
+  "required_verbs": [
+    "vcrun2022",
+    "ucrtbase2019",
+    "d3dcompiler_47"
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "checked_date": "2026-10-12",
+  "method": "Read local winetricks recipes; extract cached installers without running Wine; compare versions and SHA256. No installation or UI validation of replacement packages.",
+  "winetricks_version": "20260125-next",
+  "winetricks_sha256": "672a1ff4442e8691a3ffc0e6860137e201a1d1227e9b3044245f1731e9e9837e",
+  "riched30": {
+    "installer_sha256": "536e4c8385d7d250fd5702a6868d1ed004692136eefad22252d0dac15f02563a",
+    "file": {
+      "version": "5.30.23.1200",
+      "architecture": "x86",
+      "sha256": "1c2508fb55ddc459d0327f2017471545c87420443391567094e768fb34032da1"
+    },
+    "exact_match": true
+  },
+  "app_and_cef_runtimes": [
+    {
+      "path": "msvcp140.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "85aa8c8ab4cbf1ff9ae5c7bde1bf6da2e18a570e36e2d870b88536b8658c5ba8"
+    },
+    {
+      "path": "msvcp140_1.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "a7ed4a417f0c50578f2ca2c5106004dd82f78dd3658a852b37147fc362716667"
+    },
+    {
+      "path": "msvcp140_2.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "3eee52d6389e9f12fa38f71247656c414ba675a96f7fa9987ed598f5963711db"
+    },
+    {
+      "path": "msvcp140_atomic_wait.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "1b940ce6e0791b41538f475ff97fcd04156c2cab924557199b57736d7ea510d5"
+    },
+    {
+      "path": "msvcp140_codecvt_ids.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "af5645d93635823702f00e12c0c8d68eea5d2f20edcebfdcf5e076e50a9cb64a"
+    },
+    {
+      "path": "concrt140.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "1573721c06f70d779f5aeba175c039202069da15d8526c3ce0c19b8c7fa985b1"
+    },
+    {
+      "path": "vcruntime140.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "c7d9dfddbe68cf7c6f0b595690e31a26df4780f465d2b90b5f400f2d8d788512"
+    },
+    {
+      "path": "vcruntime140_threads.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "0adc89f01f9719c26a1a6176690c2ca8e5e1ff8339a4b140e4260ba3d6ae78a6"
+    },
+    {
+      "path": "ucrtbase.dll",
+      "version": "10.0.10240.16384",
+      "architecture": "x86",
+      "sha256": "7041885b2a8300bf12a46510228ce8d103d74e83b1baf696b84ff3e5ab785dd1"
+    },
+    {
+      "path": "dbghelp.dll",
+      "version": "10.0.19041.685",
+      "architecture": "x86",
+      "sha256": "1bb698c87b6c74d43dc83b1c689dd807a5000e775259e1666aa786a1869d1f36"
+    },
+    {
+      "path": "vccorlib140.dll",
+      "version": "14.38.33135.0",
+      "architecture": "x86",
+      "sha256": "b4652ed190eebf59d4ca8bb340cadfbcfbb7a32abb893d57ac49b1f22cfa0861"
+    },
+    {
+      "path": "compatible_web/msvcp140.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "a030dc2dfd2eca28a9375c92989adf4daf161f988db5e16b9e10678eb0dff4c7"
+    },
+    {
+      "path": "compatible_web/msvcp140_1.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "edfbcb2ced712f23842525cb076ee2c09cc7b811a389cf37922d04ef1985e10f"
+    },
+    {
+      "path": "compatible_web/msvcp140_2.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "f3117e3445945a872a35e91371e2a6c9f7b3fa5e74e5985f6ab12ac101b280fe"
+    },
+    {
+      "path": "compatible_web/msvcp140_atomic_wait.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "2f9cdd965650440cebaf2349140a7dde9b587829b7753de8cd051933a777f499"
+    },
+    {
+      "path": "compatible_web/msvcp140_codecvt_ids.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "945225e01a65e5199aa7372b893da3b42dbd99f315c345f0e7c136af88e897ef"
+    },
+    {
+      "path": "compatible_web/concrt140.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "993af3de5e1fe2e3d0954cf06254fabb91a5a3aa513183fe0841b897eafdaeee"
+    },
+    {
+      "path": "compatible_web/vcruntime140.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "f843cd00d9aff9a902dd7c98d6137639a10bd84904d81a085c28a3b29f8223c1"
+    },
+    {
+      "path": "compatible_web/vcruntime140_1.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "e4e85eea1106d361923995e53a0b961a28d4fb58555f40945003f35e5bf2c273"
+    },
+    {
+      "path": "compatible_web/vcruntime140_threads.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "edb3ff7cef28496d535e40769625e542dd3e13110c38ce2e3dc1caa8687b892a"
+    },
+    {
+      "path": "compatible_web/ucrtbase.dll",
+      "version": "10.0.22621.2428",
+      "architecture": "x86_64",
+      "sha256": "c0061755734e64409ce39a4957259b598342f251939c9bf8e5df1664163cdc00"
+    },
+    {
+      "path": "compatible_web/d3dcompiler_47.dll",
+      "version": "10.0.22621.3233",
+      "architecture": "x86_64",
+      "sha256": "33ab718a10794f2848dfc51720a09776dc313e6abc98b071154fcba9a3952668"
+    },
+    {
+      "path": "compatible_web/dbghelp.dll",
+      "version": "10.0.22621.1778",
+      "architecture": "x86_64",
+      "sha256": "131493d48eeec95099053066c90fa2a56adaede68aadf81c2f0201316598ca8a"
+    },
+    {
+      "path": "compatible_web/vccorlib140.dll",
+      "version": "14.38.33130.0",
+      "architecture": "x86_64",
+      "sha256": "aca79a9c1f6d664d99691fd0d3d84a8819993f784b2ff6d7baf8e8ab2e15e7b0"
+    }
+  ],
+  "cached_runtime_packages": [
+    {
+      "verb": "vcrun2022",
+      "cached_installer": "vc_redist.x86.exe",
+      "installer_sha256": "0c09f2611660441084ce0df425c51c11e147e6447963c3690f97e0b25c55ed64",
+      "sample_files": [
+        {
+          "filename": "msvcp140.dll_x86",
+          "version": "14.44.35211.0",
+          "architecture": "x86",
+          "sha256": "97e71a3c697fb1ab3af777db39009e4602525e8c3aff0837ecc7031cba188165"
+        },
+        {
+          "filename": "vcruntime140_threads.dll_x86",
+          "version": "14.44.35211.0",
+          "architecture": "x86",
+          "sha256": "bb2b1d16187562376fc888059e2cbbf26c5404f6a4bb7197d1d01b970f199667"
+        }
+      ]
+    },
+    {
+      "verb": "vcrun2022",
+      "cached_installer": "vc_redist.x64.exe",
+      "installer_sha256": "cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b",
+      "sample_files": [
+        {
+          "filename": "msvcp140.dll_amd64",
+          "version": "14.44.35211.0",
+          "architecture": "x86_64",
+          "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+        },
+        {
+          "filename": "vcruntime140_threads.dll_amd64",
+          "version": "14.44.35211.0",
+          "architecture": "x86_64",
+          "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+        }
+      ]
+    },
+    {
+      "verb": "ucrtbase2019",
+      "cached_installer": "VC_redist.x86.exe",
+      "installer_sha256": "14563755ac24a874241935ef2c22c5fce973acb001f99e524145113b2dc638c1",
+      "sample_files": [
+        {
+          "filename": "ucrtbase.dll",
+          "version": "10.0.10586.15",
+          "architecture": "x86",
+          "sha256": "66a93e40dd6721ded8a32d407d2c5fc291edaf74485ccbc848b6804efebd6dba"
+        }
+      ]
+    },
+    {
+      "verb": "ucrtbase2019",
+      "cached_installer": "VC_redist.x64.exe",
+      "installer_sha256": "52b196bbe9016488c735e7b41805b651261ffa5d7aa86eb6a1d0095be83687b2",
+      "sample_files": [
+        {
+          "filename": "ucrtbase.dll",
+          "version": "10.0.10586.15",
+          "architecture": "x86_64",
+          "sha256": "51cbbde17a768930300236facd9738f54b7801e6715771ff8af90bfbe3fad44f"
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "filename": "arial.ttf",
+      "verb": "arial",
+      "verified_environment_sha256": "df49c8c8ef30e534ca3e762b157a79aab775f3eeb229706014b0003a994a9b67",
+      "cached_source_sha256": "35c0f3559d8db569e36c31095b8a60d441643d95f59139de40e23fada819b833",
+      "exact_match": false
+    },
+    {
+      "filename": "arialbd.ttf",
+      "verb": "arial",
+      "verified_environment_sha256": "1b551e2d9396970fcf7a9d0b823f8df87f389b18c51f646a4b40701a39463aec",
+      "cached_source_sha256": "4044aa6b5bebbc36980206b45b0aaaaa5681552a48bcadb41746d5d1d71fd7b4",
+      "exact_match": false
+    },
+    {
+      "filename": "arialbi.ttf",
+      "verb": "arial",
+      "verified_environment_sha256": "e381b167b14c83b499487778a70f523d944445dc37487da3a98c8bc4ede50852",
+      "cached_source_sha256": "2f371cd9d96b3ac544519d85c16dc43ceacdfcea35090ee8ddf3ec5857c50328",
+      "exact_match": false
+    },
+    {
+      "filename": "ariali.ttf",
+      "verb": "arial",
+      "verified_environment_sha256": "a45201fa83c9d4bc0700621609d6609555b76d1b7d868b5f7607c8cd481485b5",
+      "cached_source_sha256": "70ade233175a6a6675e4501461af9326e6f78b1ffdf787ca0da5ab0fc8c9cfd6",
+      "exact_match": false
+    },
+    {
+      "filename": "calibri.ttf",
+      "verb": "calibri",
+      "verified_environment_sha256": "436cb479a8f9eff517016868323bdfbca1a053bba4cc55c8753859b64d041c5c",
+      "cached_source_sha256": "436cb479a8f9eff517016868323bdfbca1a053bba4cc55c8753859b64d041c5c",
+      "exact_match": true
+    },
+    {
+      "filename": "calibrib.ttf",
+      "verb": "calibri",
+      "verified_environment_sha256": "ce7dd6ba37e7b8dff865b6ce334ef773b9ad86d8a9d495c309ced108856bed54",
+      "cached_source_sha256": "ce7dd6ba37e7b8dff865b6ce334ef773b9ad86d8a9d495c309ced108856bed54",
+      "exact_match": true
+    },
+    {
+      "filename": "calibrii.ttf",
+      "verb": "calibri",
+      "verified_environment_sha256": "d9f13268dca6e828cb9ed5827dc99d188cf0d7c55349f92802fd6532926bdfbf",
+      "cached_source_sha256": "d9f13268dca6e828cb9ed5827dc99d188cf0d7c55349f92802fd6532926bdfbf",
+      "exact_match": true
+    },
+    {
+      "filename": "calibriz.ttf",
+      "verb": "calibri",
+      "verified_environment_sha256": "b5e3f6b9fcdf4b3a89ed182d4ade810d45cfef17f57b4bbc5cd6be1e83de40ab",
+      "cached_source_sha256": "b5e3f6b9fcdf4b3a89ed182d4ade810d45cfef17f57b4bbc5cd6be1e83de40ab",
+      "exact_match": true
+    },
+    {
+      "filename": "consola.ttf",
+      "verb": "consolas",
+      "verified_environment_sha256": "45c14a49e0ba2edc00b72afad9a930cad5c1b9a93323b239a8c308efc5a65e8e",
+      "cached_source_sha256": "45c14a49e0ba2edc00b72afad9a930cad5c1b9a93323b239a8c308efc5a65e8e",
+      "exact_match": true
+    },
+    {
+      "filename": "consolab.ttf",
+      "verb": "consolas",
+      "verified_environment_sha256": "5c27a540c51a0e60b2caa4e9f6c9164fde89a9fdc560747bfa1658f6e556cf61",
+      "cached_source_sha256": "5c27a540c51a0e60b2caa4e9f6c9164fde89a9fdc560747bfa1658f6e556cf61",
+      "exact_match": true
+    },
+    {
+      "filename": "consolai.ttf",
+      "verb": "consolas",
+      "verified_environment_sha256": "18db132c539323badaf0e1c9ceffa497e1996946a8faac26cc5fbe6fc8233314",
+      "cached_source_sha256": "18db132c539323badaf0e1c9ceffa497e1996946a8faac26cc5fbe6fc8233314",
+      "exact_match": true
+    },
+    {
+      "filename": "consolaz.ttf",
+      "verb": "consolas",
+      "verified_environment_sha256": "fc9e9f0b6ae6d068b01e1511e475b508e15799529f53679f1e927f5418040c3f",
+      "cached_source_sha256": "fc9e9f0b6ae6d068b01e1511e475b508e15799529f53679f1e927f5418040c3f",
+      "exact_match": true
+    },
+    {
+      "filename": "cour.ttf",
+      "verb": "courier",
+      "verified_environment_sha256": "6715838c52f813f3821549d3f645db9a768bd6f3a43d8f85a89cb6875a546c61",
+      "cached_source_sha256": "6715838c52f813f3821549d3f645db9a768bd6f3a43d8f85a89cb6875a546c61",
+      "exact_match": true
+    },
+    {
+      "filename": "courbd.ttf",
+      "verb": "courier",
+      "verified_environment_sha256": "edf8a7c5bfcac2e1fe507faab417137cbddc9071637ef4648238d0768c921e02",
+      "cached_source_sha256": "edf8a7c5bfcac2e1fe507faab417137cbddc9071637ef4648238d0768c921e02",
+      "exact_match": true
+    },
+    {
+      "filename": "courbi.ttf",
+      "verb": "courier",
+      "verified_environment_sha256": "66dbfa20b534fba0e203da140fec7276a45a1069e424b1b9c35547538128bbe8",
+      "cached_source_sha256": "66dbfa20b534fba0e203da140fec7276a45a1069e424b1b9c35547538128bbe8",
+      "exact_match": true
+    },
+    {
+      "filename": "couri.ttf",
+      "verb": "courier",
+      "verified_environment_sha256": "f3f6b09855b6700977e214aab5eb9e5be6813976a24f894bd7766e92c732fbe1",
+      "cached_source_sha256": "f3f6b09855b6700977e214aab5eb9e5be6813976a24f894bd7766e92c732fbe1",
+      "exact_match": true
+    },
+    {
+      "filename": "micross.ttf",
+      "verb": "micross",
+      "verified_environment_sha256": "b0bc5a7f8a531339a6ed86742624d179bdc7279c49a9f8a3643234c0d7e9e0f1",
+      "cached_source_sha256": "b0bc5a7f8a531339a6ed86742624d179bdc7279c49a9f8a3643234c0d7e9e0f1",
+      "exact_match": true
+    },
+    {
+      "filename": "tahoma.ttf",
+      "verb": "tahoma",
+      "verified_environment_sha256": "8f8c9a611820737a687ab4624d687abb17b474746cb16f6108ef215bf08eb373",
+      "cached_source_sha256": "8f8c9a611820737a687ab4624d687abb17b474746cb16f6108ef215bf08eb373",
+      "exact_match": true
+    },
+    {
+      "filename": "tahomabd.ttf",
+      "verb": "tahoma",
+      "verified_environment_sha256": "d5eff0e5e6bed9802f4c61bd1bb153bc981eb1e07c8fa2c2f5a7f723fccfd8b7",
+      "cached_source_sha256": "d5eff0e5e6bed9802f4c61bd1bb153bc981eb1e07c8fa2c2f5a7f723fccfd8b7",
+      "exact_match": true
+    },
+    {
+      "filename": "times.ttf",
+      "verb": "times",
+      "verified_environment_sha256": "3bbe9306646e401914bd337d380ad0e808aa1d0ecde869e3a8097aac48a56a7f",
+      "cached_source_sha256": "4e98adeff8ccc8ef4e3ece8d4547e288ff85fdc9c7ca711a4599c234874bbe86",
+      "exact_match": false
+    },
+    {
+      "filename": "timesbd.ttf",
+      "verb": "times",
+      "verified_environment_sha256": "55b95fc06b6e32ea757fa420163077d8374b8fd8f3be586904203feaa4a19f98",
+      "cached_source_sha256": "4357b63cef20c01661a53c5dae70ffd20cb4765503aaed6d38b17a57c5a90bff",
+      "exact_match": false
+    },
+    {
+      "filename": "timesbi.ttf",
+      "verb": "times",
+      "verified_environment_sha256": "0ecfc6ee791cdd71f429ec1afb57486a4a32f8c4796567d384357287c92485f2",
+      "cached_source_sha256": "192e1b0d18e90334e999a99f8c32808d6a2e74b3698b8cd90c943c2249a46549",
+      "exact_match": false
+    },
+    {
+      "filename": "timesi.ttf",
+      "verb": "times",
+      "verified_environment_sha256": "fb28b821d4f2ea8f8c9441210b1c8b4a26f799288f9ee276ed8efbac529219ca",
+      "cached_source_sha256": "c25ae529b4cecdbca148b6ccb862ee0abad770af8b1fd29c8dba619d1b8da78a",
+      "exact_match": false
+    },
+    {
+      "filename": "verdana.ttf",
+      "verb": "verdana",
+      "verified_environment_sha256": "c74da119f4e6e9eae27feb637aa1cc6e696929d17d04ff84f93e5aeedee5fd84",
+      "cached_source_sha256": "96ed14949ca4b7392cff235b9c41d55c125382abbe0c0d3c2b9dd66897cae0cb",
+      "exact_match": false
+    },
+    {
+      "filename": "verdanab.ttf",
+      "verb": "verdana",
+      "verified_environment_sha256": "5839c5f5e550e3b1c7059a11b8be0064ee61bf3eb26dc6aae7f3fd5491533aec",
+      "cached_source_sha256": "c8f5065ba91680f596af3b0378e2c3e713b95a523be3d56ae185ca2b8f5f0b23",
+      "exact_match": false
+    },
+    {
+      "filename": "verdanai.ttf",
+      "verb": "verdana",
+      "verified_environment_sha256": "1b323c7f64258f7e0a3b97101569af8dd49f09a4c7c08ad3864719a821a7545b",
+      "cached_source_sha256": "91b59186656f52972531a11433c866fd56e62ec4e61e2621a2dba70c8f19a828",
+      "exact_match": false
+    },
+    {
+      "filename": "verdanaz.ttf",
+      "verb": "verdana",
+      "verified_environment_sha256": "6f1570e0b419d4afc36959f6429e542ab42ee9d255366cd77e16e50abe9b5386",
+      "cached_source_sha256": "698e220f48f4a40e77af7eb34958c8fd02f1e18c3ba3f365d93bfa2ed4474c80",
+      "exact_match": false
+    }
+  ]
+}

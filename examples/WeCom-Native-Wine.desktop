@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=企业微信（原生 Wine）
+Type=Application
+Exec=env WECOM_PREFIX=/home/<user>/Works/Softwares/wine/WeCom /bin/bash /home/<user>/Works/Softwares/wine/WeCom/wecom-compat/scripts/launch-wecom.sh
+Icon=applications-office
+Terminal=false
+Categories=Office;Network;
+StartupWMClass=wxwork.exe

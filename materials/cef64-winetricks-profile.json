@@ -1,0 +1,23 @@
+{
+  "component": "5.0.79.5483",
+  "wine_verified": "11.19",
+  "winetricks_verified": "20260125-next",
+  "required_verbs": ["vcrun2022", "ucrtbase2019", "d3dcompiler_47"],
+  "excluded_files": [
+    "concrt140.dll",
+    "d3dcompiler_47.dll",
+    "msvcp140.dll",
+    "msvcp140_1.dll",
+    "msvcp140_2.dll",
+    "msvcp140_atomic_wait.dll",
+    "msvcp140_codecvt_ids.dll",
+    "ucrtbase.dll",
+    "vccorlib140.dll",
+    "vcruntime140.dll",
+    "vcruntime140_threads.dll"
+  ],
+  "retained_exception": {
+    "file": "vcruntime140_1.dll",
+    "reason": "The tested vcrun2022 installation left Wine's builtin file in system32; retain the vendor native DLL rather than claim replacement by winetricks."
+  }
+}

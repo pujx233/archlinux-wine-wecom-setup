@@ -1,0 +1,1129 @@
+{
+  "date": "2026-10-12",
+  "status": "independent-prefix-functional-validation-passed",
+  "environment": {
+    "wine": "11.19",
+    "architecture": "win64",
+    "wecom": "5.0.11.6018",
+    "cef": "5.0.79.5483"
+  },
+  "method": {
+    "prefix": "fresh independent prefix",
+    "runtime_source": "copies of the already verified winetricks DLLs from the daily prefix; no new winetricks install in this trial",
+    "application_source": "application files only; no account or user registry copied",
+    "login": "manual",
+    "configuration": "registry AppDefaults DllOverrides, same keys written by winecfg; not GUI automation",
+    "daily_configuration_modified_by_trial": false,
+    "protected_daily_files": 325
+  },
+  "activation_context_probe": {
+    "tested_dll": "msvcp140.dll",
+    "contexts": [
+      "main external version manifest",
+      "WeMail embedded manifest resource 1"
+    ],
+    "local_present_native": "loads local Microsoft DLL",
+    "local_present_builtin": "loads Wine builtin; module name can still display redirected local path",
+    "local_missing_all_four_orders": "error 126 with activation context; cannot fall back to the installed native system DLL",
+    "no_activation_context_local_missing": "native system DLL loads successfully"
+  },
+  "cef_overrides": {
+    "WXWorkWeb.exe": {
+      "*vcruntime140_1": "builtin",
+      "*dbghelp": "builtin"
+    },
+    "minidump.exe": {
+      "*vcruntime140_1": "builtin",
+      "*dbghelp": "builtin"
+    },
+    "TxBugReport.exe": {
+      "*vcruntime140_1": "builtin",
+      "*dbghelp": "builtin"
+    }
+  },
+  "test_launcher_change": "removed vcruntime140_1 from test WINEDLLOVERRIDES so this entry is controlled by registry",
+  "api_sets": {
+    "count": 46,
+    "explicit_overrides_needed": false,
+    "resolution": "Wine API-set mapping to kernelbase/kernel32/ntdll/combase or installed UCRT"
+  },
+  "existing_cef_exclusions": [
+    "concrt140.dll",
+    "d3dcompiler_47.dll",
+    "msvcp140.dll",
+    "msvcp140_1.dll",
+    "msvcp140_2.dll",
+    "msvcp140_atomic_wait.dll",
+    "msvcp140_codecvt_ids.dll",
+    "ucrtbase.dll",
+    "vccorlib140.dll",
+    "vcruntime140.dll",
+    "vcruntime140_threads.dll"
+  ],
+  "additional_cef_exclusions": [
+    "api-ms-win-core-com-l1-1-0.dll",
+    "api-ms-win-core-console-l1-1-0.dll",
+    "api-ms-win-core-console-l1-2-0.dll",
+    "api-ms-win-core-datetime-l1-1-0.dll",
+    "api-ms-win-core-debug-l1-1-0.dll",
+    "api-ms-win-core-errorhandling-l1-1-0.dll",
+    "api-ms-win-core-fibers-l1-1-0.dll",
+    "api-ms-win-core-file-l1-1-0.dll",
+    "api-ms-win-core-file-l1-2-0.dll",
+    "api-ms-win-core-file-l2-1-0.dll",
+    "api-ms-win-core-handle-l1-1-0.dll",
+    "api-ms-win-core-heap-l1-1-0.dll",
+    "api-ms-win-core-interlocked-l1-1-0.dll",
+    "api-ms-win-core-libraryloader-l1-1-0.dll",
+    "api-ms-win-core-localization-l1-2-0.dll",
+    "api-ms-win-core-memory-l1-1-0.dll",
+    "api-ms-win-core-namedpipe-l1-1-0.dll",
+    "api-ms-win-core-processenvironment-l1-1-0.dll",
+    "api-ms-win-core-processthreads-l1-1-0.dll",
+    "api-ms-win-core-processthreads-l1-1-1.dll",
+    "api-ms-win-core-profile-l1-1-0.dll",
+    "api-ms-win-core-rtlsupport-l1-1-0.dll",
+    "api-ms-win-core-string-l1-1-0.dll",
+    "api-ms-win-core-synch-l1-1-0.dll",
+    "api-ms-win-core-synch-l1-2-0.dll",
+    "api-ms-win-core-sysinfo-l1-1-0.dll",
+    "api-ms-win-core-sysinfo-l1-2-0.dll",
+    "api-ms-win-core-sysinfo-l1-2-1.dll",
+    "api-ms-win-core-timezone-l1-1-0.dll",
+    "api-ms-win-core-util-l1-1-0.dll",
+    "api-ms-win-crt-conio-l1-1-0.dll",
+    "api-ms-win-crt-convert-l1-1-0.dll",
+    "api-ms-win-crt-environment-l1-1-0.dll",
+    "api-ms-win-crt-filesystem-l1-1-0.dll",
+    "api-ms-win-crt-heap-l1-1-0.dll",
+    "api-ms-win-crt-locale-l1-1-0.dll",
+    "api-ms-win-crt-math-l1-1-0.dll",
+    "api-ms-win-crt-multibyte-l1-1-0.dll",
+    "api-ms-win-crt-private-l1-1-0.dll",
+    "api-ms-win-crt-process-l1-1-0.dll",
+    "api-ms-win-crt-runtime-l1-1-0.dll",
+    "api-ms-win-crt-stdio-l1-1-0.dll",
+    "api-ms-win-crt-string-l1-1-0.dll",
+    "api-ms-win-crt-time-l1-1-0.dll",
+    "api-ms-win-crt-utility-l1-1-0.dll",
+    "api-ms-win-downlevel-kernel32-l2-1-0.dll",
+    "vcruntime140_1.dll",
+    "dbghelp.dll"
+  ],
+  "cef_remaining_files": [
+    "TxBugReport.exe",
+    "WXWorkWeb.exe",
+    "adj.dll",
+    "chrome_100_percent.pak",
+    "chrome_200_percent.pak",
+    "chrome_elf.dll",
+    "client_extension.dll",
+    "crash_reporter.cfg",
+    "icudtl.dat",
+    "libEGL.dll",
+    "libGLESv2.dll",
+    "libcef.dll",
+    "locales/de.pak",
+    "locales/en-US.pak",
+    "locales/es.pak",
+    "locales/fil.pak",
+    "locales/id.pak",
+    "locales/ja.pak",
+    "locales/ms.pak",
+    "locales/th.pak",
+    "locales/vi.pak",
+    "locales/zh-CN.pak",
+    "minidump.exe",
+    "resources.pak",
+    "snapshot_blob.bin",
+    "tinyxml.dll",
+    "v8_context_snapshot.bin",
+    "vk_swiftshader.dll",
+    "vk_swiftshader_icd.json",
+    "vulkan-1.dll"
+  ],
+  "remaining_vendor_hashes_match": true,
+  "ui_trials": [
+    {
+      "additional_change": "omit vcruntime140_1.dll; use Wine builtin",
+      "remaining_cef_files": 77,
+      "restarted": true,
+      "user_confirmed": "mail, documents, workbench pages and Chinese input normal"
+    },
+    {
+      "additional_change": "omit 46 API-set files",
+      "remaining_cef_files": 31,
+      "restarted": true,
+      "user_confirmed": "mail, documents, workbench pages and Chinese input normal"
+    },
+    {
+      "additional_change": "omit dbghelp.dll; set builtin overrides for CEF executables",
+      "remaining_cef_files": 30,
+      "restarted": true,
+      "user_confirmed": "mail, documents, workbench pages and Chinese input normal"
+    }
+  ],
+  "actual_cef_builtin_paths": [
+    "/usr/lib/wine/x86_64-windows/dbghelp.dll",
+    "/usr/lib/wine/x86_64-windows/vcruntime140_1.dll"
+  ],
+  "dbghelp_required_exports": {
+    "count": 13,
+    "missing": [],
+    "programs": [
+      "WXWorkWeb.exe",
+      "libcef.dll",
+      "minidump.exe",
+      "TxBugReport.exe"
+    ],
+    "crash_reporting_functionally_tested": false
+  },
+  "vcrun2022_native_exception": {
+    "installer_sha256": "cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b",
+    "contains_native_vcruntime140_1": true,
+    "native_version": "14.44.35211.0",
+    "native_sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+    "direct_load_passed": true,
+    "system_file_before_trial": "Wine builtin",
+    "installed_native_only_without_local": "error 126",
+    "native_install_to_system_directory_tested": false
+  },
+  "not_tested": [
+    "daily-prefix migration",
+    "sending mail/messages or submitting approvals",
+    "meetings and bundled plugins",
+    "actual crash dump/report flow",
+    "long-term stability",
+    "other Wine/WeCom/CEF versions"
+  ],
+  "default_install_profile": "unchanged: deployed 78-file winetricks profile",
+  "loader_probe_results": [
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "native,builtin",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "00f8:trace:loaddll:build_module Loaded L\"C:\\\\case-main\\\\msvcp140.dll\" at 7B490000: native",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-main\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "native",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0118:trace:loaddll:build_module Loaded L\"C:\\\\case-main\\\\msvcp140.dll\" at 7B490000: native",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-main\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "builtin,native",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0138:trace:loaddll:build_module Loaded L\"C:\\\\case-main\\\\msvcp140.dll\" at 7B1F0000: builtin",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-main\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "builtin",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0158:trace:loaddll:build_module Loaded L\"C:\\\\case-main\\\\msvcp140.dll\" at 7B1F0000: builtin",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-main\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "native,builtin",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "native",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "builtin,native",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "native,builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "01f8:trace:loaddll:build_module Loaded L\"C:\\\\windows\\\\system32\\\\msvcp140.dll\" at 7B490000: native",
+        "LOADED=C:\\windows\\system32\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "native,builtin",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0218:trace:loaddll:build_module Loaded L\"C:\\\\case-mail\\\\msvcp140.dll\" at 7B490000: native",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-mail\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "native",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0238:trace:loaddll:build_module Loaded L\"C:\\\\case-mail\\\\msvcp140.dll\" at 7B490000: native",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-mail\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "builtin,native",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0258:trace:loaddll:build_module Loaded L\"C:\\\\case-mail\\\\msvcp140.dll\" at 7B040000: builtin",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-mail\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "builtin",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0278:trace:loaddll:build_module Loaded L\"C:\\\\case-mail\\\\msvcp140.dll\" at 7B040000: builtin",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-mail\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "native,builtin",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "native",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "builtin,native",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": true,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "ACTCTX_OK",
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-mail",
+      "dll": "msvcp140.dll",
+      "mode": "native,builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0318:trace:loaddll:build_module Loaded L\"C:\\\\windows\\\\system32\\\\msvcp140.dll\" at 7B490000: native",
+        "LOADED=C:\\windows\\system32\\msvcp140.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "native,builtin",
+      "local_present": true,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0330:trace:loaddll:build_module Loaded L\"C:\\\\case-cef\\\\vcruntime140_1.dll\" at 00006FFFFD170000: native",
+        "LOADED=C:\\case-cef\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "native",
+      "local_present": true,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0348:trace:loaddll:build_module Loaded L\"C:\\\\case-cef\\\\vcruntime140_1.dll\" at 00006FFFFD170000: native",
+        "LOADED=C:\\case-cef\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "builtin,native",
+      "local_present": true,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0360:trace:loaddll:build_module Loaded L\"C:\\\\case-cef\\\\vcruntime140_1.dll\" at 00006FFFFD010000: builtin",
+        "LOADED=C:\\case-cef\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "builtin",
+      "local_present": true,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0378:trace:loaddll:build_module Loaded L\"C:\\\\case-cef\\\\vcruntime140_1.dll\" at 00006FFFFD010000: builtin",
+        "LOADED=C:\\case-cef\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "native,builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "0390:trace:loaddll:build_module Loaded L\"C:\\\\windows\\\\system32\\\\vcruntime140_1.dll\" at 00006FFFFD010000: builtin",
+        "LOADED=C:\\windows\\system32\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "native",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 5,
+      "output": [
+        "LOAD_ERROR=126"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "builtin,native",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "03c0:trace:loaddll:build_module Loaded L\"C:\\\\windows\\\\system32\\\\vcruntime140_1.dll\" at 00006FFFFD010000: builtin",
+        "LOADED=C:\\windows\\system32\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "vcruntime140_1.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "03d8:trace:loaddll:build_module Loaded L\"C:\\\\windows\\\\system32\\\\vcruntime140_1.dll\" at 00006FFFFD010000: builtin",
+        "LOADED=C:\\windows\\system32\\vcruntime140_1.dll"
+      ]
+    },
+    {
+      "case": "case-main",
+      "dll": "msvcp140.dll",
+      "mode": "builtin",
+      "local_present": true,
+      "activation_context": true,
+      "env_override": "n,b",
+      "exit": 0,
+      "output": [
+        "03f8:trace:loaddll:build_module Loaded L\"C:\\\\case-main\\\\msvcp140.dll\" at 7B040000: builtin",
+        "ACTCTX_OK",
+        "LOADED=C:\\case-main\\msvcp140.dll"
+      ]
+    }
+  ],
+  "api_set_and_dbghelp_probe_results": [
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-com-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\combase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-console-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-console-l1-2-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-datetime-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-debug-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-errorhandling-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-fibers-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-file-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-file-l1-2-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-file-l2-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-handle-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-heap-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-interlocked-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-libraryloader-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-localization-l1-2-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-memory-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-namedpipe-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-processenvironment-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-processthreads-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernel32.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-processthreads-l1-1-1.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernel32.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-profile-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ntdll.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-string-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-synch-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-synch-l1-2-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-sysinfo-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-sysinfo-l1-2-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-sysinfo-l1-2-1.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-timezone-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernelbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-core-util-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernel32.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-conio-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-convert-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-environment-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-heap-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-locale-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-math-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-multibyte-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-private-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-process-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-runtime-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-string-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-time-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-crt-utility-l1-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\ucrtbase.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "api-ms-win-downlevel-kernel32-l2-1-0.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "LOADED=C:\\windows\\system32\\kernel32.dll"
+      ]
+    },
+    {
+      "case": "case-cef",
+      "dll": "dbghelp.dll",
+      "mode": "builtin",
+      "local_present": false,
+      "activation_context": false,
+      "env_override": null,
+      "exit": 0,
+      "output": [
+        "053c:trace:loaddll:build_module Loaded L\"C:\\\\windows\\\\system32\\\\dbghelp.dll\" at 00006FFFFCAC0000: builtin",
+        "LOADED=C:\\windows\\system32\\dbghelp.dll"
+      ]
+    }
+  ],
+  "cleanup": "test prefix stopped; temporary prefix, extracted DLL, probes and raw logs removed; source and structured results retained"
+}
