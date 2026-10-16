@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-13",
+  "status": "isolated_transport_verified_application_acceptance_pending",
+  "environment": {
+    "wine": "11.19-1 Arch new WoW64",
+    "source_tag": "wine-11.19",
+    "source_archive_sha256": "73eb0b02dfc0cb0ff4f4d8d36c5786261e9725ac91968ae4d4e4b9a498c4087f",
+    "prefix": "/tmp/wecom-complete-fix/prefix",
+    "display": "private Xvfb",
+    "daily_prefix_modified": false,
+    "system_wine_replaced": false
+  },
+  "tests": {
+    "repository_unittest_count": 22,
+    "repository_unittest_result": "PASS",
+    "x64_to_x64": {
+      "result": "PASS",
+      "received_utf16_units": 69895,
+      "mismatches": 0,
+      "fnv1a_units_hash": 3372363594
+    },
+    "x86_to_x64": {
+      "result": "PASS",
+      "received_utf16_units": 69895,
+      "mismatches": 0,
+      "fnv1a_units_hash": 3372363594
+    },
+    "invalid_requests": {
+      "result": "PASS",
+      "delivered_units": 0,
+      "cases": [
+        "zero count",
+        "65537 count",
+        "null payload",
+        "null hwnd",
+        "invalid hwnd"
+      ]
+    },
+    "coverage": [
+      "Chinese",
+      "surrogate pair",
+      "4097-unit commit",
+      "65536-unit commit",
+      "back-to-back commits with reused buffer",
+      "ordering",
+      "late duplicate check",
+      "experimental library mapping and capability cookie"
+    ],
+    "destroy_during_delivery": {
+      "result": "BOUNDARY_CONFIRMED",
+      "queued_units": 3,
+      "accepted": true,
+      "received_units": 1,
+      "attempts": 1,
+      "retries": 0,
+      "conclusion": "Queue acceptance is not an editor transaction."
+    },
+    "rebuilt_titlebar_rea": {
+      "result": "ANALYZED",
+      "evidence_id": "ev_20be493c3f6b6313d3841c09ee637b35bc6cb5f5eace529e33f4f20b27308e9d",
+      "function": "0x401650",
+      "initial_grace_ms": 120000,
+      "confirmed_absence_grace_ms": 6000,
+      "limitation": "Pseudocode is reconstructed; no complete public API body range. Regression tests validate lifecycle semantics."
+    }
+  },
+  "artifacts": {
+    "wine_patch_sha256": "335ab0f7110f9191457150c129face9441383b1413f2bf5fb052d79141bd7dfb",
+    "bridge_patch_sha256": "6a353beb9bd8ba938491d15c0af4549e4ab71096632ae7772c2bb2f80f501de8",
+    "probe_source_sha256": "792214b91d931dcdf362c3ef1674657b8d0c94c4c3046ee9650513e7818bb0d5",
+    "experimental_win32u_sha256": "5ea1cf6d656d5bb0c628f7b2fdb0864bc1efb9fa25c2315e5a938ce2b43d2445",
+    "rebuilt_titlebar_sha256": "d6a9d4cc7ad59276da5fa5dd1b7e6d124a1ee9365980ef6f352c0a0b986ff2e3",
+    "raw_evidence": "dist/wine-ime-commit-20261013/"
+  },
+  "limitations": [
+    "No real WeCom/CEF editor or fcitx-to-editor end-to-end acceptance.",
+    "Synthetic receiver accepts WM_CHAR; synchronous delivery scheduling may affect CEF compatibility.",
+    "Not the standard IMM composition protocol.",
+    "Accepted payload can be lost after receiver exit or window destruction.",
+    "Reject preserves original XIM result but does not guarantee the original Wine path delivers it.",
+    "No real allocation-failure injection into the Wine server.",
+    "Helper slow-start lifecycle tests use mock APIs/clocks; no daily deployment."
+  ]
+}

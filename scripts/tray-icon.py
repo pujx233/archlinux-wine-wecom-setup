@@ -9,6 +9,42 @@ import select
 import time
 
 
+def process_matches_prefix(process, prefix):
+    """Read environment only after the caller identifies a relevant process."""
+    environment = (process / 'environ').read_bytes().split(b'\0')
+    values = [os.fsdecode(entry.partition(b'=')[2]) for entry in environment
+              if entry.startswith(b'WINEPREFIX=')]
+    return len(values) == 1 and bool(values[0]) and Path(values[0]).resolve() == prefix
+
+
+def wecom_process_alive(prefix, proc_root=Path('/proc')):
+    """True/False for this prefix's WXWork.exe; None if inspection is uncertain."""
+    uncertain = False
+    try:
+        for process in proc_root.iterdir():
+            if not process.name.isdigit():
+                continue
+            try:
+                if process.stat().st_uid != os.getuid():
+                    continue
+                if (process / 'comm').read_text().strip().lower() != 'wxwork.exe':
+                    continue
+                # Wine exposes the Windows image as argv[0]. Reject helper
+                # processes and arguments that merely mention WXWork.exe.
+                command = (process / 'cmdline').read_bytes().split(b'\0', 1)[0]
+                if command.replace(b'\\', b'/').rsplit(b'/', 1)[-1].lower() != b'wxwork.exe':
+                    continue
+                if process_matches_prefix(process, prefix):
+                    return True
+            except (FileNotFoundError, ProcessLookupError):
+                continue  # The process exited during inspection.
+            except OSError:
+                uncertain = True
+    except OSError:
+        return None
+    return None if uncertain else False
+
+
 def placeholder(pixels):
     """Match only the captured 16x16 black square in a 20x20 ARGB icon."""
     if len(pixels) != 400:
@@ -126,9 +162,7 @@ class X11:
                 continue
             if pid[0] not in processes:
                 try:
-                    env = Path('/proc/%d/environ' % pid[0]).read_bytes().split(b'\0')
-                    values = [os.fsdecode(e.split(b'=', 1)[1]) for e in env if e.startswith(b'WINEPREFIX=')]
-                    processes[pid[0]] = len(values) == 1 and Path(values[0]).resolve() == prefix
+                    processes[pid[0]] = process_matches_prefix(Path('/proc/%d' % pid[0]), prefix)
                 except OSError:
                     processes[pid[0]] = False
             if not processes[pid[0]]:
@@ -175,16 +209,23 @@ class X11:
             self.x.XDestroyImage(image)
 
     def run(self, prefix):
-        deadline, next_scan, absent, seen, count = time.monotonic() + 120, 0, 0, False, 0
+        deadline, next_scan, absent_since, seen, count = time.monotonic() + 120, 0, None, False, 0
         event = (C.c_long * 24)()  # XEvent includes a 24-long padding member.
         while True:
             now = time.monotonic()
             if now >= next_scan:
-                found, window = self.target(prefix)
-                seen = seen or found
-                absent = 0 if found else absent + 1
-                if (seen and absent >= 3) or (not seen and now >= deadline):
+                alive = wecom_process_alive(prefix)
+                seen = seen or alive is True
+                if alive is False and seen:
+                    if absent_since is None:
+                        absent_since = now
+                    elif now - absent_since >= 6:
+                        return
+                else:
+                    absent_since = None
+                if not seen and now >= deadline:
                     return
+                _, window = self.target(prefix)
                 self.attach(window)
                 next_scan = now + 2
             dirty = False

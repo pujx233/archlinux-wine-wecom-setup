@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-16",
+  "status": "isolated and formal WeCom functional checks passed; long-term stability not established",
+  "platform": {"wine_package": "11.19-1", "architecture": "Linux x86_64 new WoW64", "host_page_bytes": 4096, "gcc": "16.2.1", "glibc": "2.44", "clang_lld": "23.1.1"},
+  "source": {
+    "url": "https://github.com/wine-mirror/wine/archive/refs/tags/wine-11.19.tar.gz",
+    "sha256": "73eb0b02dfc0cb0ff4f4d8d36c5786261e9725ac91968ae4d4e4b9a498c4087f",
+    "patch_sha256": "f40393f18ae5e230c62312e0daf69768ceaab3884a83c0caee0734ecf5b23b69",
+    "configure": ["--enable-win64", "--without-x", "--without-wayland"],
+    "cflags": "-g -O2",
+    "make_targets": ["dlls/ntdll/ntdll.so", "loader/wine"],
+    "baseline_ntdll_sha256": "32aa56afe37eba5c24a5c500d1c761626c5618b6f622af8c105ca3a571bbd42e",
+    "candidate_ntdll_sha256": "e38a364b4287df357f8ee673b3784bf0610dd07a4396943485772470e6b89100",
+    "binary_reproducibility": "Recorded hashes identify tested artifacts; other build paths/toolchains need fresh validation."
+  },
+  "reserve_probe": {
+    "reservation_bytes": 1099511627776,
+    "touches_reserved_range": false,
+    "baseline_pss_delta_kib": [262148, 262148, 262148],
+    "patched_pss_delta_kib": [11, 8, 8],
+    "patched_private_dirty_delta_kib": [12, 8, 8],
+    "both_noaccess_mapping_delta_bytes": 1099511627776,
+    "all_exit_codes": 0,
+    "actual_ntdll_mappings_verified": true,
+    "swap_kib": 0
+  },
+  "semantics_probe": {"runs_per_variant": 3, "assertions_per_run": 467740, "cross_table_boundary_cycles": 8, "concurrent_cycles_per_run": 800, "threads": 4, "all_exit_codes": 0},
+  "upstream_ntdll_virtual_tests": {"per_variant_tests": 2550, "todo": 112, "failures": 0, "skipped": 0, "exit_code": 0, "source_modified": false},
+  "native_range_test": {"cases": 221184, "madvise_successes": 16387, "injected_failures": 16387, "historical_sanitizers": ["ASan", "UBSan", "LeakSanitizer"], "exact_helper_sha256": "0b2fa2a16d814ec6babd4c62c4d32b7a1930fbfa9da08b2c1a7aedc346172dc8"},
+  "rea": {"provider": "Ghidra 12.1.4", "target": "tested candidate ntdll.so", "evidence": "ev_24f872db846117a7fe19c778919c22d5379cd2541e5125320cd9cd605a9e7c06", "result": "aligned madvise advice=4, memset fallback, edges and nonzero paths observed", "limitation": "Tail memset marked terminal flow; objdump and runtime tests cross-check it."},
+  "isolated_application": {
+    "wecom": "5.0.11.6018",
+    "cef": "5.0.79.5483 page-aligned",
+    "user_verified": ["document body", "mail page", "Chinese typing without sending"],
+    "wine_processes": 31,
+    "renderers": 7,
+    "pss_mib": [2875.46, 2879.52, 2894.22],
+    "renderer_pss_mib": [865.38, 872.69, 884.85],
+    "elapsed_seconds": 246.7,
+    "pid_set_unchanged": true,
+    "visible_window_response_failures": 0,
+    "observed_pss_growth_mib": 18.76
+  },
+  "production_deployment": "../../materials/wine-vprot-deployment.json",
+  "limitations": ["Application totals are not matched-workload A/B savings.", "No claim of zero growth or long-term leak freedom.", "Mail sending, document editing, meetings, GPU stress and future Wine versions not validated.", "Document preloading unchanged; no guessed setting applied."],
+  "repository_checks": "Offline tests cover runtime selection, installer safeguards and exact patch helper. They do not rerun the historical Wine or GUI suites."
+}

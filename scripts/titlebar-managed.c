@@ -6,6 +6,7 @@ typedef struct {long left,top,right,bottom;} RECT;
 typedef struct {long x,y;} POINT;
 typedef struct {HANDLE hwnd;unsigned message,wparam;long lparam;DWORD time;POINT pt;DWORD private_data;} MSG;
 typedef struct {DWORD size;RECT monitor,work;DWORD flags;} MONITORINFO;
+typedef struct {DWORD size,usage,pid,heap,module,threads,parent;long priority;DWORD flags;char exe[260];} PROCESSENTRY32;
 #define API __declspec(dllimport) __stdcall
 API HANDLE FindWindowA(const char *, const char *);
 API HANDLE FindWindowExA(HANDLE,HANDLE,const char *,const char *);
@@ -24,6 +25,9 @@ API char *GetCommandLineA(void);
 API void ExitProcess(DWORD);
 API HANDLE CreateMutexA(void *,BOOL,const char *);
 API DWORD GetLastError(void);
+API HANDLE CreateToolhelp32Snapshot(DWORD,DWORD);
+API BOOL Process32First(HANDLE,PROCESSENTRY32 *);
+API BOOL Process32Next(HANDLE,PROCESSENTRY32 *);
 API HANDLE OpenProcess(DWORD,BOOL,DWORD);
 API DWORD WaitForSingleObject(HANDLE,DWORD);
 API BOOL CloseHandle(HANDLE);
@@ -65,6 +69,48 @@ static char output[2048];static unsigned pos;
 static void text(const char *s){while(*s&&pos<sizeof(output)-64)output[pos++]=*s++;}
 static void hex(DWORD v){text("0x");for(int i=7;i>=0;i--)output[pos++]="0123456789abcdef"[(v>>(4*i))&15];}
 static int same(const char*a,const char*b){while(*a&&*a==*b){a++;b++;}return *a==*b;}
+static int is_wecom_exe(const char *name){
+    const char *base=name;
+    while(*name){if(*name=='\\'||*name=='/')base=name+1;name++;}
+    const char *expected="wxwork.exe";
+    while(*base&&*expected){
+        char c=*base++;if(c>='A'&&c<='Z')c+='a'-'A';
+        if(c!=*expected++)return 0;
+    }
+    return !*base&&!*expected;
+}
+static int wecom_process_alive(void){
+    /* Wine's Toolhelp snapshot is scoped to this helper's wineserver/prefix.
+       Return -1 for failed enumeration, never mistake it for an app exit. */
+    HANDLE snapshot=CreateToolhelp32Snapshot(2,0); /* TH32CS_SNAPPROCESS */
+    if(snapshot==(HANDLE)-1)return -1;
+    PROCESSENTRY32 entry;entry.size=sizeof(entry);
+    BOOL more=Process32First(snapshot,&entry);
+    while(more){
+        if(entry.pid&&is_wecom_exe(entry.exe)){CloseHandle(snapshot);return 1;}
+        more=Process32Next(snapshot,&entry);
+    }
+    DWORD error=GetLastError();CloseHandle(snapshot);
+    return error==18?0:-1; /* ERROR_NO_MORE_FILES */
+}
+static void wait_for_main_window(void){
+    DWORD started=GetTickCount(),absent_since=0;int seen=0,absent=0;
+    while(!(main_window=FindWindowA("WeWorkWindow",0))){
+        int alive=wecom_process_alive();DWORD now=GetTickCount();
+        if(alive>0){seen=1;absent=0;}
+        else if(!seen){
+            /* Bound an idle helper when the application never starts. A live
+               WXWork process may take arbitrarily longer to create a window. */
+            if((DWORD)(now-started)>=120000)return;
+        }else if(alive==0){
+            if(!absent){absent=1;absent_since=now;}
+            else if((DWORD)(now-absent_since)>=6000)return;
+        }else absent=0;
+        /* Allow a short startup process handoff; a missing/hidden window alone
+           must not end the watcher. Once bound, retain the main PID watch. */
+        Sleep(1000);
+    }
+}
 static BOOL __stdcall inspect(HANDLE w,long unused){
     char cls[128];DWORD pid=0;GetClassNameA(w,cls,128);
     int is_titlebar=same(cls,"TitleBarWindow"),is_shadow=same(cls,"PerryShadowWnd");
@@ -286,11 +332,7 @@ void mainCRTStartup(void){
     if(watch){
         mutex=CreateMutexA(0,0,"Local\\WeComTitleBarManaged");
         if(!mutex||GetLastError()==183)ExitProcess(0);
-        for(unsigned i=0;i<120;i++){
-            main_window=FindWindowA("WeWorkWindow",0);
-            if(main_window)break;
-            Sleep(1000);
-        }
+        wait_for_main_window();
     }else main_window=FindWindowA("WeWorkWindow",0);
     if(!main_window){text("WeCom main window not found\n");flush();ExitProcess(1);}
     GetWindowThreadProcessId(main_window,&main_pid);

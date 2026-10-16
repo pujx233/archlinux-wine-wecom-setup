@@ -1,6 +1,12 @@
 # Arch Linux 原生 Wine 企业微信
 
-复现已验证的 **企业微信 5.0.11.6018 + 原生 Wine + x64 CEF 5.0.79.5483**，并保留安装理由与维护方法。更新于 2026-10-12。
+复现已验证的 **企业微信 5.0.11.6018 + 原生 Wine + x64 CEF 5.0.79.5483**，并保留安装理由与维护方法。更新于 2026-10-16。
+
+2026-10-13 仓库新增的慢启动辅助程序与相对 prefix 修复尚未部署，完整 IME 修复仍在 `/tmp` 隔离 Wine 中实验，详见[当前验证边界](verification-and-recovery.md#2026-10-13-仓库待部署改动)。
+
+2026-10-16 新增可选的 [CEF 内存修复](experiments/cef-memory/README.md)：对已知 DLL 重排文件页对齐，让 Wine 共享代码映像。隔离启动与页面验证通过后，已按用户要求部署到正式环境，文档正文、邮件页面及常用中文输入正常；CEF 匿名映像由每进程约 232 MiB 降至约 15 MiB。它修改第三方文件并使签名失效，不随启动器自动执行；文档预加载开关尚未证实，保持不变。[部署与边界](verification-and-recovery.md#2026-10-16-cef-内存修复)。
+
+同日完成 [Wine 页保护元数据修复](experiments/wine-vprot/README.md)：避免每个 1 TiB 地址预留对应的约 256 MiB 用户态元数据实际驻留。已通过隔离验证并接入正式企业微信，保留系统 Wine 和原账号数据；7 个 renderer 的正式样本总 PSS 约 **2.94 GiB**，用户确认聊天、文档、邮件及中文输入正常。仓库已整合补丁、固定指纹安装器、启动选择与回退；运行时未安装时继续使用系统 Wine，版本／哈希不符时自动回退。不同页面样本不能直接相减计算收益，长期稳定性仍未验证。[正式记录](materials/wine-vprot-deployment.json)。
 
 | 需要做什么 | 文档 |
 |---|---|
@@ -19,6 +25,7 @@ cd archlinux-wine-wecom-setup
 ## 当前环境
 
 - 企业微信 **5.0.11.6018**；首次安装使用 Wine **11.18**，后续启动和窗口修复在 **11.19** 下验证。
+- 当前正式实例使用企业微信专用 Wine **11.19 vprot** 运行时；其他模块和 wineserver 复用同版本系统包，不替换全局 Wine。
 - Arch Linux，Plasma/KWin **6.7.5**，Wayland/XWayland；双屏分别为 **135% / 100%** 缩放。
 - 原生环境：`~/Works/Softwares/wine/WeCom`，桌面入口 `WeCom-Native-Wine.desktop`。
 
@@ -31,7 +38,7 @@ cd archlinux-wine-wecom-setup
 
 两种方案均保留主程序、WeMail 安装器自带的 DLL 和 manifest。30 文件方案的配置、限制及证据见 [winecfg 试验](materials/winetricks.md#winecfg-覆盖试验)；校验／打包工具支持 `full`（89）、`winetricks`（78）和 `wine-builtin`（30）三种清单。正式迁移证据见 [部署记录](materials/winecfg-deployment.json)。
 
-日常环境已确认邮件、文档、工作台页面、聊天及各编辑框的中文输入和显示正常；标题栏、边缘缩放及双屏托盘交互也已分别验收。输入修复使用附源码的 fcitx5 桥接，继续运行系统 Wine。邮件收发、长期稳定性和整理后的完整从零安装尚未验收，详见[验证范围](verification-and-recovery.md#验证范围)。已有安装更新辅助脚本时使用[维护步骤](verification-and-recovery.md#更新启动辅助文件)。
+日常环境已确认邮件、文档、工作台页面、聊天及各编辑框的中文输入和显示正常；标题栏、边缘缩放及双屏托盘交互也已分别验收。输入修复使用附源码的 fcitx5 桥接；vprot 仅替换专用运行时中的 ntdll，不改变输入桥接或系统 win32u。邮件收发、长期稳定性和整理后的完整从零安装尚未验收，详见[验证范围](verification-and-recovery.md#验证范围)。已有安装更新辅助脚本时使用[维护步骤](verification-and-recovery.md#更新启动辅助文件)。
 
 此前临时测试环境、诊断文件、本地归档和历史回退备份已清理。本次正式切换另保留了 48 个移出文件、原覆盖配置和恢复注册表值，供回退至 78 文件方案使用。
 
@@ -43,6 +50,7 @@ cd archlinux-wine-wecom-setup
 | [materials/](materials/) | 安装包、CEF、RichEdit、字体的版本与校验清单 |
 | [scripts/](scripts/) | 材料校验、启动及兼容辅助工具；两个 EXE 和输入桥接 SO 均附源码 |
 | [examples/](examples/) | 修复文件索引、桌面入口示例、第三方素材来源和校验信息 |
+| [experiments/wine-vprot/](experiments/wine-vprot/) | 已部署内存补丁、探针源码、验证证据及运行时复建边界 |
 
 自制兼容工具提供源码、配置与构建方法；第三方 CEF、微软 DLL、字体和安装器不上传，也不通过 Release 分发。来源和获取步骤见[素材说明](examples/README.md)，取得后放入被 Git 忽略的 `assets/`。CEF 需从企业微信下载的匹配组件或已有已验证环境提取，本项目没有该历史组件的固定官方下载直链。
 

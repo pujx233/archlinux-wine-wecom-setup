@@ -20,6 +20,9 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 | `WECOM_TRAY_FIX` | 只停用托盘菜单和悬浮提示的坐标修正 |
 | `WECOM_TRAY_ICON_FIX` | 只停用托盘黑块的空白占位修正 |
 | `WECOM_IME_FIX` | 停用邮件及内嵌页面的 XIM 提交桥接；恢复系统 Wine 的输入行为 |
+| `WECOM_VPROT_FIX` | 停用专用页保护元数据修复，改用系统 Wine；不撤销 CEF 文件对齐或输入桥接 |
+
+`WECOM_VPROT_RUNTIME` 可指定专用运行时的绝对路径；默认目录为 `${XDG_DATA_HOME:-$HOME/.local/share}/wecom-runtimes/wine-11.19-vprot-e38a364b`。不安装时继续使用系统 Wine；已有运行时不满足固定版本／哈希时警告并回退。安装步骤见 [Wine 内存修复](experiments/wine-vprot/README.md#安装已验证产物)。
 
 开关在启动时读取；先完整退出企业微信，再设置开关启动。例如：
 
@@ -51,7 +54,8 @@ cp -- "$WECOM_SETUP/scripts/launch-wecom.sh" "$WECOM_SETUP/scripts/prepare-start
   "$WECOM_SETUP/scripts/titlebar-managed.c" \
   "$WECOM_SETUP/scripts/ime-bridge.c" "$WECOM_SETUP/scripts/ime-bridge.so" \
   "$WECOM_SETUP/scripts/titlebar-managed.exe" "$WECOM_PREFIX/wecom-compat/scripts/"
-cp -- "$WECOM_SETUP/configs/dll-overrides.txt" "$WECOM_PREFIX/wecom-compat/configs/"
+cp -- "$WECOM_SETUP/configs/dll-overrides.txt" "$WECOM_SETUP/configs/wine-vprot-runtime.sha256" \
+  "$WECOM_PREFIX/wecom-compat/configs/"
 bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 ```
 
@@ -59,7 +63,7 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 
 ## 验证范围
 
-截至 **2026-10-12**，验证结果如下。不同轮次的验收范围分别记录，不代表每次 DLL 变更都重新检查了全部功能。
+以下是截至 **2026-10-12** 已部署版本的历史验收。不同轮次的验收范围分别记录，不代表每次 DLL 变更都重新检查了全部功能，也不包含下节 2026-10-13 的仓库待部署改动。
 
 | 范围 | 验证结果与证据 |
 |---|---|
@@ -74,6 +78,46 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 此前的临时 prefix、诊断文件、归档及历史回退备份已清理。本次 30 文件正式切换另保留 `setup-backups/cef-builtin-<时间>/`：包含 48 个移出文件、原覆盖列表、桌面入口及仅恢复本次六个注册表值的 `rollback.reg`，不包含账号快照。此次主窗口出现较晚，窗口／托盘辅助程序等待超时后已补启动；延迟原因尚未确定。
 
 `materials/versions.json` 保留首次安装时的 Wine 11.18 及材料版本，不代表当前运行状态；后续启动和窗口修复使用 Wine 11.19。材料一致性、脚本静态检查和用户实际操作是不同层次的验证。
+
+## 2026-10-16 CEF 内存修复
+
+已在独立 prefix 的真实桌面窗口完成对齐版启动、登录与页面验收；用户确认已有文档正文和邮件页面正常。核对了目标 prefix、实际 CEF 映射路径和 SHA256，排除把日常原版登录当作测试版登录的情况。原版 Xvfb 测试曾因会话过期中断，不作为对齐版验收证据。
+
+每个 CEF 映像私有脏页从原版约 232 MiB 降至约 15 MiB；11 个 CEF 进程的映像合计 PSS 为 308.34 MiB。登录后的总 PSS 约 2.42 GiB（7 个 CEF，2 个 renderer），打开文档和邮件后约 4.66 GiB（11 个 CEF，6 个 renderer）；页面数量不同，不能宣称整个应用固定节省某个百分比。探针同负载两进程触页对比、源码依据、复建 SHA256 与 REA 入口核查见 [实验记录](experiments/cef-memory/README.md)及[数值证据](experiments/cef-memory/results.json)。
+
+仓库新增 9 项内存转换器测试，全套 **31 项测试**通过；实际原件经仓库脚本生成的副本指纹一致，30 文件原版与对齐版均通过对应校验。生成工具不自动部署、不接受未知版本、不覆盖已有文件；使用和回退见[生成、安装与回退](experiments/cef-memory/README.md#生成安装与回退)。
+
+随后按用户要求更新正式环境，仅替换 `compatible_web/libcef.dll`；关闭隔离实例，通过原有已安装启动器重启，没有同步仓库其他待部署辅助改动，也没有把测试账号数据覆盖回正式环境。原件备份为 prefix 下的 `setup-backups/cef-memory-20261016-fg5wyhpb/libcef.dll`，哈希已复核；正式 DLL 实际加载路径和输出 SHA256 均匹配。用户确认正式环境文档正文、邮件页面和常用中文输入正常，见[部署记录](materials/cef-memory-deployment.json)。
+
+11:12 正式样本有 11 个 CEF、6 个 renderer，总 PSS **4.72 GiB**；CEF 映像合计 PSS **311.52 MiB**，每进程匿名映像 **14.84–15.28 MiB**。新复制的文件页尚未写回时也可能计入 `Private_Dirty`，不能将该字段全部等同匿名副本。正式环境仍会随打开的业务页面增长内存，本修复只解决重复加载 CEF 映像。
+
+本轮未完整验收复杂组合输入、编辑保存、邮件收发、会议、GPU 压力、更新与长期稳定性。文档预加载未关闭。对齐版使 DLL 签名失效，原件备份必须保留；默认校验仍使用厂商哈希，验证对齐版需显式传 `--cef-layout page-aligned`。
+
+## 2026-10-16 Wine 元数据内存修复
+
+在前述 CEF 对齐版上继续定位到 1 TiB 预留区对应的约 256 MiB Wine 页保护元数据。补丁、同条件 A/B、内存语义和源码构建证据见 [Wine vprot](experiments/wine-vprot/README.md)。隔离用户确认文档、邮件及中文输入正常后，约 14:00 切换正式环境：仅接入专用运行时和已安装启动器，不替换全局 Wine、不回写隔离账号副本、不同步此前待部署的标题栏／托盘修改。
+
+14:01:28 正式样本含 31 个 Wine 进程、7 个 renderer，总 PSS **3007.55 MiB**；renderer 约 **50.1–286.4 MiB**。实际 ntdll 路径、正式 prefix、IME 桥接与中文区域设置均核对，5 个可见窗口响应正常，用户确认登录、聊天切换、文档正文、邮件页和中文输入正常。统计不含 Python 辅助程序、内核计费与 GPU 专有分配，也不是严格的应用总量 A/B。[部署清单](materials/wine-vprot-deployment.json)不含账号数据。
+
+本次仓库整合后的启动器使用可移植用户目录及随安装复制的校验清单；首次正式切换的脚本使用机器固定路径，两者不是同一个文件哈希。整合过程没有再次重启或更新正式安装。离线回归覆盖运行时选择、版本／哈希回退、安装拒绝覆盖／符号链接及补丁原样辅助函数；不代表复跑了历史 Wine 或 GUI 测试。
+
+完整退出后用 `WECOM_VPROT_FIX=0` 可单次回退；持续停用和启动器备份恢复见[回退说明](experiments/wine-vprot/README.md#验收与回退)。文档预加载保持不变。隔离短时 PSS 有轻微增长，长期、会议和实际收发／编辑尚未验收。
+
+## 2026-10-13 仓库待部署改动
+
+启动器已在切换目录前解析 `WECOM_PREFIX` 的绝对物理路径，修复相对 prefix 定位漂移。标题栏和托盘辅助程序已改为根据目标 prefix 的 `WXWork.exe` 存活状态等待，避免应用仍运行但主窗口超过 120 秒才出现时提前退出。日常 prefix 内已安装的副本尚未同步这些改动；部署时需按本页重建与更新步骤配套同步，再验收真实慢启动和窗口／托盘交互。
+
+等待边界如下：最初 120 秒始终未确认目标进程存在时，结束初始等待，包括观测未知的情况；这只是宽限到期，不是确认应用已退出。观察进程后，窗口缺失仍继续等待，只有连续确认进程不存在满 6 秒才退出；期间进程重新出现则继续等待，权限或枚举结果未知会清空缺失计时。标题栏绑定后仍监视原进程句柄，并只接收同一 PID 的替换主窗口。
+
+在仓库根目录运行：
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+2026-10-13 复核通过 **22 项测试**：13 项辅助程序测试、1 项启动器路径测试和 8 项实验输入桥接测试；其中 C harness 含 7 个确定性启动场景。覆盖超过 120 秒的无窗口慢启动、未启动、进程退出、短暂交接、观测未知、进程／prefix 过滤、含空格路径和相对符号链接，以及整段提交接受／拒绝与焦点作用域。测试需要 Python 3、Bash、GCC、patch 和 X11 开发头文件，通过临时目录及模拟 API／时钟运行，不启动 Wine 或真实 UI。标题栏源码另已编译为 32 位 Windows EXE 并同步仓库 `scripts/titlebar-managed.exe`；这些结果不代表日常部署或真实企业微信交互验收。
+
+IME 完整修复仍未完成：生产桥接逐个投递 `WM_CHAR`，中途失败可能只保留部分提交。`/tmp` 隔离 Wine 11.19 的[整段入队实验](experiments/wine-ime-commit/README.md)已通过 64→64 与 32→64 位双进程测试，每轮 69,895 个 UTF-16 单元内容、数量与顺序一致；无效请求不产生字符。窗口中途销毁测试同时确认：接受 3 个单元后，接收端只处理 1 个即退出，队列接受不等于编辑器完整写入。未替换日常 Wine，尚未通过真实企业微信验收；截至 2026-10-12 的输入成功记录不能作为该实验的验收结果。
 
 ## 验收清单
 
@@ -115,6 +159,7 @@ python3 "$WECOM_SETUP/scripts/verify-materials.py" \
 | 现象 | 优先检查 |
 |---|---|
 | 登录后恰好等待约五分钟 | [Boost 初始化锁](configuration-rationale.md#启动等待)及 `wecom-startup.log`；不要自动删除 `CUR_LOGIN_UIN_KEY` |
+| 慢启动后标题栏／托盘修复未生效 | 核对 prefix 内辅助文件版本与 `wecom-titlebar.log`／`wecom-tray-icon.log`；旧版可能在主窗口出现前已等满 120 秒退出，见[待部署启动修复](#2026-10-13-仓库待部署改动) |
 | 正文白屏、renderer 退出 | [实际加载的 CEF 版本和架构](configuration-rationale.md#文档页面)、新增 Crashpad 转储 |
 | 工作台可用，但文档列表空白 | WeMail 的 `wemail/qt.conf`、Qt 感知模式和父窗口；renderer 存活不等于嵌入正常 |
 | MSVCP140 缺失导入 | 配套 DLL 是否存在，启动器的覆盖列表和实际加载路径 |
@@ -172,6 +217,7 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 | 字体映射 | 根据安装前导出值逐项还原；`.reg` 导入只合并，不会自动删除新增键值 |
 | 窗口/托盘修复 | 使用[启动开关](#日常启动与开关)停用，或还原更新前的整套辅助文件；图标占位可单独用 `WECOM_TRAY_ICON_FIX=0` 停用 |
 | 邮件/文档/审批输入桥接 | 设置 `WECOM_IME_FIX=0` 后完整重启，或停止后恢复配套辅助文件备份 |
+| Wine vprot 元数据修复 | 完整退出目标 prefix，设置 `WECOM_VPROT_FIX=0` 再启动；保留 CEF、输入桥接及账号数据 |
 
 备份命名可能与新装步骤不同，恢复前需核对备份内容与目标路径。
 
@@ -187,6 +233,9 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 | `status-font-probe.c` / `.exe` | 安装或诊断时读取/设置提示字体，不常驻 |
 | `ime-bridge.c` / `.so` | 转交 WeMail 或主程序所承载的跨进程 CEF 编辑器的 XIM 提交，随企业微信启动链加载 |
 | `verify-materials.py` | 只读校验安装包、组件和字体材料 |
+| `align-cef-memory.py` | 对已知 CEF 原件生成独立页对齐副本，不自动安装；需单独验收与备份 |
+| `install-wine-vprot-runtime.py` | 从已验证本地产物创建新的专用运行时，拒绝未知哈希和覆盖现有目录，不修改 prefix 或系统 Wine |
+| `configs/wine-vprot-runtime.sha256` | 启动器与运行时安装器共用的固定候选及系统依赖指纹，须和启动器配套更新 |
 | `package-cef-example.py` | 按厂商清单打包；默认完整 89 文件，`--cef-profile winetricks` 打包旧 78 文件，`--cef-profile wine-builtin` 打包当前 30 文件 |
 | [DLL 加载探针源码](examples/dll-overrides/loader-probe.c) | 独立验证 winecfg 加载顺序与 manifest 重定向；不随日常启动运行 |
 

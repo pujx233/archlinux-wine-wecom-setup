@@ -238,13 +238,16 @@ cp -- "$WECOM_SETUP/scripts/launch-wecom.sh" "$WECOM_SETUP/scripts/prepare-start
   "$WECOM_SETUP/scripts/titlebar-managed.exe" \
   "$WECOM_SETUP/scripts/ime-bridge.c" "$WECOM_SETUP/scripts/ime-bridge.so" \
   "$WECOM_SETUP/scripts/titlebar-managed.c" "$WECOM_PREFIX/wecom-compat/scripts/"
-cp -- "$WECOM_SETUP/configs/dll-overrides.txt" "$WECOM_PREFIX/wecom-compat/configs/"
+cp -- "$WECOM_SETUP/configs/dll-overrides.txt" "$WECOM_SETUP/configs/wine-vprot-runtime.sha256" \
+  "$WECOM_PREFIX/wecom-compat/configs/"
 /usr/bin/wineserver -k
 /usr/bin/wineserver -w
 bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 ```
 
 启动脚本使用 `WECOM_PREFIX`，显式固定原生 Wine、中文区域设置及完整 DLL 覆盖列表，并启动标题栏维护工具；工具随主进程退出。首次登录在企业微信窗口中自行完成。
+
+可选的 [Wine 元数据内存修复](experiments/wine-vprot/README.md)需另外安装已验证的专用运行时；上面只复制校验清单，不下载或构建 Wine。不安装时仍使用系统 Wine；已有匹配运行时则自动选择，设置 `WECOM_VPROT_FIX=0` 可停用。不要为新装覆盖已运行的正式 prefix 或移入测试账号数据。
 
 需要桌面图标时，在另一个终端创建一个**新名字**的 `.desktop`，不要覆盖已有入口。将示例中的 `<user>` 替换为真实用户名；Desktop Entry 不展开 `$HOME`，必须使用实际绝对路径：
 

@@ -24,6 +24,8 @@ parser.add_argument('--only', choices=('installer', 'cef', 'richedit', 'fonts'),
                     help='Verify one material group; default: verify all groups')
 parser.add_argument('--cef-profile', choices=('full', 'winetricks', 'wine-builtin'), default='full',
                     help='Expected CEF files: full=89, winetricks=78, wine-builtin=30; runtime configuration is checked separately')
+parser.add_argument('--cef-layout', choices=('vendor', 'page-aligned'), default='vendor',
+                    help='Vendor hashes by default; page-aligned accepts only the recorded experimental libcef.dll SHA256')
 args = parser.parse_args()
 errors = []
 
@@ -64,6 +66,11 @@ if args.only in (None, 'richedit'):
     checked.append('x86 RichEdit SHA256')
 if args.only in (None, 'cef'):
     manifest = json.loads((ROOT / 'materials/cef64-vendor-manifest.json').read_text())
+    alignment = None
+    if args.cef_layout == 'page-aligned':
+        alignment = json.loads((ROOT / 'materials/cef64-page-aligned.json').read_text())
+        if alignment['component'] != versions['cef']['component']:
+            raise SystemExit('Selected layout does not match the CEF version')
     excluded = set()
     if args.cef_profile != 'full':
         profile = json.loads((ROOT / f'materials/cef64-{args.cef_profile}-profile.json').read_text())
@@ -83,13 +90,16 @@ if args.only in (None, 'cef'):
         if relative in excluded:
             omitted.add(relative)
             continue
-        check(args.cef_dir / relative, metadata['md5'], 'md5')
+        if alignment and relative == 'libcef.dll':
+            check(args.cef_dir / relative, alignment['output_sha256'])
+        else:
+            check(args.cef_dir / relative, metadata['md5'], 'md5')
         count += 1
     if omitted != excluded:
         errors.append('Profile exclusions are not present in the vendor manifest')
     for name in ('WXWorkWeb.exe', 'libcef.dll'):
         check_pe(args.cef_dir / name, 0x8664)
-    checked.append(f'{count} CEF files ({args.cef_profile}) and x64 PE headers')
+    checked.append(f'{count} CEF files ({args.cef_profile}, {args.cef_layout}) and x64 PE headers')
 if args.only in (None, 'fonts'):
     fonts = json.loads((ROOT / 'materials/fonts.json').read_text())
     if args.fonts_profile == 'cn':

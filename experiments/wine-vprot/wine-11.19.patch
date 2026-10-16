@@ -1,0 +1,50 @@
+--- a/dlls/ntdll/unix/virtual.c
++++ b/dlls/ntdll/unix/virtual.c
+@@ -1178,6 +1178,34 @@
+     return size;
+ }
+ 
++#ifdef _WIN64
++static void set_page_vprot_range( BYTE *base, size_t size, BYTE vprot )
++{
++#if defined(__linux__) && defined(MADV_DONTNEED)
++    size_t leading, discard_size;
++
++    if (!size) return;
++    if (!vprot)
++    {
++        leading = (-(UINT_PTR)base) & host_page_mask;
++        if (leading > size) leading = size;
++        memset( base, 0, leading );
++        base += leading;
++        size -= leading;
++        discard_size = size & ~host_page_mask;
++        if (discard_size)
++        {
++            if (madvise( base, discard_size, MADV_DONTNEED )) memset( base, 0, discard_size );
++            base += discard_size;
++            size -= discard_size;
++        }
++    }
++#endif
++    if (size) memset( base, vprot, size );
++}
++#endif
++
++
+ /***********************************************************************
+  *           set_page_vprot
+  *
+@@ -1192,10 +1220,10 @@
+     while (idx >> pages_vprot_shift != end >> pages_vprot_shift)
+     {
+         size_t dir_size = pages_vprot_mask + 1 - (idx & pages_vprot_mask);
+-        memset( pages_vprot[idx >> pages_vprot_shift] + (idx & pages_vprot_mask), vprot, dir_size );
++        set_page_vprot_range( pages_vprot[idx >> pages_vprot_shift] + (idx & pages_vprot_mask), dir_size, vprot );
+         idx += dir_size;
+     }
+-    memset( pages_vprot[idx >> pages_vprot_shift] + (idx & pages_vprot_mask), vprot, end - idx );
++    set_page_vprot_range( pages_vprot[idx >> pages_vprot_shift] + (idx & pages_vprot_mask), end - idx, vprot );
+ #else
+     memset( pages_vprot + idx, vprot, end - idx );
+ #endif

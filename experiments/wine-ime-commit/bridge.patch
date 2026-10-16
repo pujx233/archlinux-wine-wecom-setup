@@ -1,0 +1,65 @@
+--- a/scripts/ime-bridge.c
++++ b/scripts/ime-bridge.c
+@@ -10,7 +10,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ 
+-/* App-scoped XIM commit bridge, verified on unmodified Arch Wine 11.19.
++/* Experimental XIM commit bridge; requires the matching Wine 11.19 patch.
+  * win32u.so exports the Unix ABI, not the Win64 calling convention.
+  * Never log the committed text. No clipboard, files, or DLLs are modified. */
+ typedef void *Hwnd;
+@@ -23,7 +23,7 @@
+ static _Thread_local Hwnd (*query_window)(Hwnd, int);
+ static _Thread_local int (*class_name)(Hwnd, int, UnicodeString *);
+ static _Thread_local Hwnd (*get_prop)(Hwnd, const uint16_t *);
+-static _Thread_local int (*post_message)(Hwnd, uint32_t, uintptr_t, intptr_t);
++static _Thread_local intptr_t (*message_call)(Hwnd, uint32_t, uintptr_t, intptr_t, void *, uint32_t, int);
+ static _Thread_local int is_input_host = -1, debug;
+ 
+ static int init_api(void)
+@@ -43,15 +43,18 @@
+     }
+     if (!is_input_host) return 0;
+     if (gui_info) return 1;
+-    void *lib = dlopen("/usr/lib/wine/x86_64-unix/win32u.so", RTLD_NOW | RTLD_NOLOAD);
++    const char *path = getenv("WECOM_IME_WIN32U");
++    if (!path || path[0] != '/') return 0;
++    void *lib = dlopen(path, RTLD_NOW | RTLD_NOLOAD);
+     if (!lib) return 0;
+     gui_info = dlsym(lib, "NtUserGetGUIThreadInfo");
+     ancestor = dlsym(lib, "NtUserGetAncestor");
+     query_window = dlsym(lib, "NtUserQueryWindow");
+     class_name = dlsym(lib, "NtUserGetClassName");
+     get_prop = dlsym(lib, "NtUserGetProp");
+-    post_message = dlsym(lib, "NtUserPostMessage");
+-    if (!gui_info || !ancestor || !query_window || !class_name || !get_prop || !post_message) {
++    message_call = dlsym(lib, "NtUserMessageCall");
++    if (!gui_info || !ancestor || !query_window || !class_name || !get_prop || !message_call ||
++        message_call(NULL, 3, 0, 0, NULL, 0x305, 0) != 0x57494331) {
+         gui_info = NULL;
+         dlclose(lib);
+         return 0;
+@@ -99,14 +102,15 @@
+      * throughout the commit. Do not use global SendInput or the clipboard. */
+     GuiInfo current = {.size = sizeof(current)};
+     if (!gui_info(0, &current) || current.focus != info.focus) { free(output); return 0; }
+-    size_t sent = 0;
+-    for (; sent < count; ++sent)
+-        if (!post_message(info.focus, 0x0102, output[sent], 1)) break; /* WM_CHAR */
++    /* One MSG_NOTIFY owns a copy of the complete payload before success.
++     * No timeout/retry: accepted means queued, not acknowledged by the editor. */
++    int accepted = count && count <= 65536 &&
++        message_call(info.focus, 2, count, (intptr_t)output, NULL, 0x305, 0);
+     free(output);
+-    if (debug || sent != count)
+-        fprintf(stderr, "wecom-ime: forwarded=%zu/%zu hwnd=%p\n", sent, count, info.focus);
+-    /* After any successful post, do not duplicate an incomplete commit via IMM. */
+-    return sent > 0;
++    if (debug || !accepted)
++        fprintf(stderr, "wecom-ime: queued=%d units=%zu hwnd=%p\n", accepted, count, info.focus);
++    return accepted;
++
+ }
+ 
+ int XmbLookupString(XIC ic, XKeyPressedEvent *event, char *buffer, int size,
