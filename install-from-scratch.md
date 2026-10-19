@@ -14,7 +14,7 @@
 
 准备系统 `/usr/bin/wine` 和 `/usr/bin/wineserver`，确认能运行 32/64 位程序；另需 Python 3、Bash、winetricks 及其下载/解包依赖、已生成的 `zh_CN.UTF-8` locale。示例中的 locale 检查使用 `rg`。滚动更新的软件包安装结果不等同于固定 Wine 版本，执行前应记录 `wine --version`。
 
-KDE Wayland 下的托盘菜单与悬浮提示坐标修正另需 `kscreen-doctor`、`libX11` 和 `libXrandr`；托盘黑块修正另用 `libXdamage`。缺少相关依赖或不在 KDE Wayland 环境时，跳过对应修复。
+KDE Wayland 下的托盘菜单与悬浮提示坐标修正另需 `kscreen-doctor`、`libX11` 和 `libXrandr`；托盘图标及最小化菜单助手另用 `libXdamage`，并通过 Linux inotify 接收窗口助手的菜单请求。缺少相关依赖或不在 KDE Wayland 环境时，跳过对应修复。
 
 复用本机材料时，表中的 `drive_c/` 路径均相对于当前原生 Wine prefix `~/Works/Softwares/wine/WeCom`。这些文件已按仓库清单核对，可复制到 `assets/` 留存。
 

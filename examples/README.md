@@ -2,7 +2,7 @@
 
 本目录对应企业微信 **5.0.11.6018 / 系统 Wine 11.19 / fcitx5 / KDE Wayland** 的已验证修复。自制工具提供源码、配置和构建方法；第三方组件只记录来源、获取方式和校验值，不上传二进制，不通过 Release 分发。此前的 CEF Release 已移除。
 
-2026-10-16 正式实例进一步使用 [Wine vprot 专用运行时](../experiments/wine-vprot/README.md)降低页保护元数据占用；系统 Wine 未被替换。补丁、探针、固定指纹安装器和回退均已入库，Wine 二进制及账号数据不随仓库分发。
+正式实例使用 [Wine vprot 专用运行时](../experiments/wine-vprot/README.md)降低页保护元数据占用；系统 Wine 未被替换。补丁、探针、固定指纹安装器和回退均已入库，Wine 二进制及账号数据不随仓库分发。
 
 ## 自制工具与配置
 
@@ -12,7 +12,8 @@
 | 文档列表无法嵌入 | [qt.conf](../configs/qt.conf) 和[加载顺序](../configs/dll-overrides.txt) |
 | 中文字体与提示 | [字体注册](../configs/fonts-install.reg)、[字体替换](../configs/fonts-replacements.reg)、[StatusFont 工具源码](../scripts/status-font-probe.c) |
 | 五分钟启动等待 | [prepare-startup.py](../scripts/prepare-startup.py) |
-| 标题栏、拖动和托盘菜单交互 | [titlebar-managed.c](../scripts/titlebar-managed.c)、[tray-geometry.py](../scripts/tray-geometry.py) |
+| 标题栏、拖动、任务栏恢复与托盘坐标 | [titlebar-managed.c](../scripts/titlebar-managed.c)、[tray-geometry.py](../scripts/tray-geometry.py) |
+| 最小化托盘菜单与二级菜单保持 | [titlebar-managed.c](../scripts/titlebar-managed.c)、[tray-icon.py](../scripts/tray-icon.py)，两个助手需成套更新 |
 | 托盘提醒闪黑块 | [tray-icon.py](../scripts/tray-icon.py) |
 | 桌面入口 | [WeCom-Native-Wine.desktop](WeCom-Native-Wine.desktop)，替换 `<user>` 和 prefix 路径 |
 | 材料核验与本地归档 | [verify-materials.py](../scripts/verify-materials.py)、[package-cef-example.py](../scripts/package-cef-example.py) |
@@ -36,13 +37,15 @@
 
 ## 在本地准备 CEF 示例素材
 
-来源可为已验证版本的原厂 89 文件、旧 78 文件或当前正式的 30 文件目录，例如：
+来源可为已验证版本的原厂 89 文件、78 文件或 30 文件目录；其中 `libcef.dll` 必须为厂商原件。例如：
 
 ```text
 <原 prefix>/drive_c/Program Files (x86)/WXWork/5.0.11.6018/compatible_web/
 ```
 
-这是经过 x64 组件替换后的目录；安装器最初的同名目录可能是 x86，不能直接当作来源。其他客户端的下载缓存位置可能不同，应定位 `WXWorkWeb.exe` 与 `libcef.dll` 所在的成套目录，再按对应清单核对文件与 x64 架构。当前日常环境是 30 文件来源；按来源选择 `wine-builtin`（30）、`winetricks`（78）或 `full`（89）校验。
+这是经过 x64 组件替换后的目录；安装器自带的同名目录可能是 x86，不能直接当作来源。其他客户端的下载缓存位置可能不同，应定位 `WXWorkWeb.exe` 与 `libcef.dll` 所在的成套目录，再按对应清单核对文件与 x64 架构。按来源选择 `wine-builtin`（30）、`winetricks`（78）或 `full`（89）校验。
+
+日常环境已启用 CEF 页对齐修复，其 `libcef.dll` 不再匹配厂商哈希，不能直接交给下方打包器。若从日常环境提取素材，应先复制整套组件到独立材料目录，再用[原件备份](../verification-and-recovery.md#cef-映像内存共享)替换材料副本中的 `libcef.dll`，按厂商清单校验后打包。不要为准备素材覆盖正在使用的 DLL；`--cef-layout page-aligned` 仅用于校验已修复的安装，不是打包器参数。
 
 在仓库根目录的 Bash 中执行。打包器只读来源目录，输出到本地 `dist/`，不修改现有企业微信：
 

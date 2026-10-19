@@ -1,6 +1,6 @@
 # winecfg DLL 覆盖试验
 
-2026-10-12 在独立 Wine 11.19 `win64` prefix 中，对企业微信 5.0.11.6018 / CEF 5.0.79.5483 验证 winecfg 的 DLL 覆盖行为。结果见 [winecfg-validation.json](../../materials/winecfg-validation.json)，结论见[组件说明](../../materials/winetricks.md#winecfg-覆盖试验)。
+在独立 Wine 11.19 `win64` prefix 中，对企业微信 5.0.11.6018 / CEF 5.0.79.5483 验证 winecfg 的 DLL 覆盖行为。结果见 [winecfg-validation.json](../../materials/winecfg-validation.json)，结论见[组件说明](../../materials/winetricks.md#winecfg-覆盖试验)。
 
 这里保存自制加载探针源码，不提供微软 DLL、腾讯组件、账号状态或原始运行日志。独立试验结束后，30 文件配置已应用到正式环境；重启后用户确认页面、中文输入和显示正常。部署结果见 [winecfg-deployment.json](../../materials/winecfg-deployment.json)。
 

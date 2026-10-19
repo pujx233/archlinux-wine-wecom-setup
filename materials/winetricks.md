@@ -1,6 +1,6 @@
 # 当前修复与 winetricks 组件对照
 
-2026-10-12 在全新独立 `win64` prefix 中实际安装并验证了以下组件，使用系统 Wine 11.19、企业微信 5.0.11.6018 和 x64 CEF 5.0.79.5483。用户手动登录，未复制日常账号状态；独立试验阶段未改动日常 prefix，391 个受保护文件的哈希未变。随后经用户授权，日常环境也完成切换与验收，见下方记录。历史文件比对仍见 [winetricks-comparison.json](winetricks-comparison.json)。
+在全新独立 `win64` prefix 中实际安装并验证了以下组件，使用系统 Wine 11.19、企业微信 5.0.11.6018 和 x64 CEF 5.0.79.5483。用户手动登录，未复制日常账号状态；独立试验阶段未改动日常 prefix，391 个受保护文件的哈希未变。随后经用户授权，日常环境也完成切换与验收，见下方记录。历史文件比对仍见 [winetricks-comparison.json](winetricks-comparison.json)。
 
 本机 winetricks 脚本 SHA256：`672a1ff4442e8691a3ffc0e6860137e201a1d1227e9b3044245f1731e9e9837e`。配方可在 [Winetricks 上游源码](https://github.com/Winetricks/winetricks/blob/master/src/winetricks)中按表内名称查找；后续配方和下载版本可能变化。逐文件核对结果见 [winetricks-comparison.json](winetricks-comparison.json)。
 
@@ -71,7 +71,7 @@ Qt、腾讯配套 CEF、ANGLE／SwiftShader 及业务插件没有可直接替换
 
 ## winecfg 覆盖试验
 
-2026-10-12 又在全新独立 prefix 中测试了 winecfg 的“原生／内建”覆盖。只复制应用文件、已验证的 winetricks 系统 DLL 和字体，没有复制账号或日常注册表；用户手动登录。通过注册表写入与 winecfg 相同的 `AppDefaults/<EXE>/DllOverrides`，没有修改正式环境。探针源码、配置和使用方法见 [DLL 覆盖示例](../examples/dll-overrides/README.md)，逐项结果见 [winecfg-validation.json](winecfg-validation.json)。
+在全新独立 prefix 中测试了 winecfg 的“原生／内建”覆盖。只复制应用文件、已验证的 winetricks 系统 DLL 和字体，没有复制账号或日常注册表；用户手动登录。通过注册表写入与 winecfg 相同的 `AppDefaults/<EXE>/DllOverrides`，没有修改正式环境。探针源码、配置和使用方法见 [DLL 覆盖示例](../examples/dll-overrides/README.md)，逐项结果见 [winecfg-validation.json](winecfg-validation.json)。
 
 | 组件 | 实测结果 |
 |---|---|
