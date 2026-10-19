@@ -98,6 +98,12 @@ class ProcessFilteringTests(unittest.TestCase):
         self.process(101, command=b'C:\\WXWork\\wxwork.EXE', prefix=self.prefix / '.')
         self.assertIs(tray.wecom_process_alive(self.prefix, self.proc), True)
 
+    def test_renamed_main_thread_still_counts_and_unrelated_uithread_does_not(self):
+        self.process(101, comm='UIThread', command=b'C:\\OtherApp.exe')
+        self.assertIs(tray.wecom_process_alive(self.prefix, self.proc), False)
+        self.process(102, comm='UIThread')
+        self.assertIs(tray.wecom_process_alive(self.prefix, self.proc), True)
+
     def test_other_prefix_and_process_names_do_not_count(self):
         self.process(101, prefix=self.root / 'another-prefix')
         self.process(102, comm='WXWorkHelper.exe')
@@ -145,6 +151,32 @@ class ProcessFilteringTests(unittest.TestCase):
 
 
 class TitlebarStartupTests(unittest.TestCase):
+    def test_tray_menu_group_harness(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            binary = Path(temporary) / 'tray-menu-group'
+            subprocess.run(['gcc', '-std=c11', '-ffunction-sections', '-fdata-sections',
+                            '-Wno-pointer-to-int-cast', '-Wno-int-to-pointer-cast', '-Wl,--gc-sections',
+                            str(ROOT / 'tests/tray-menu-group.c'), '-o', str(binary)], check=True)
+            subprocess.run([str(binary)], check=True, capture_output=True, text=True)
+
+    def test_tray_restore_harness(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            binary = Path(temporary) / 'tray-restore'
+            subprocess.run(['gcc', '-std=c11', '-ffunction-sections', '-fdata-sections',
+                            '-Wno-pointer-to-int-cast', '-Wno-int-to-pointer-cast', '-Wl,--gc-sections',
+                            str(ROOT / 'tests/tray-restore.c'), '-o', str(binary)], check=True)
+            result = subprocess.run([str(binary)], check=True, capture_output=True, text=True)
+            self.assertEqual(result.stdout.strip(), 'tray restore: 12 scenarios passed')
+
+    def test_restore_guard_harness(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            binary = Path(temporary) / 'titlebar-restore'
+            subprocess.run(['gcc', '-std=c11', '-ffunction-sections', '-fdata-sections',
+                            '-Wno-pointer-to-int-cast', '-Wl,--gc-sections',
+                            str(ROOT / 'tests/titlebar-restore.c'), '-o', str(binary)], check=True)
+            result = subprocess.run([str(binary)], check=True, capture_output=True, text=True)
+            self.assertEqual(result.stdout.strip(), 'titlebar restore: 8 scenarios passed')
+
     def test_native_mock_harness(self):
         with tempfile.TemporaryDirectory() as temporary:
             binary = Path(temporary) / 'titlebar-startup'

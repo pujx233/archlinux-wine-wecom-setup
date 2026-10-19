@@ -40,6 +40,8 @@ API DWORD GetCurrentThreadId(void);
 API HANDLE GetModuleHandleA(const char *);
 API BOOL AttachThreadInput(DWORD,DWORD,BOOL);
 API BOOL IsIconic(HANDLE);
+API HANDLE GetPropA(HANDLE,const char *);
+API HANDLE CreateFileA(const char *,DWORD,DWORD,void *,DWORD,DWORD,HANDLE);
 API HANDLE WindowFromPoint(POINT);
 API HANDLE SetWindowsHookExA(int,long (__stdcall *)(int,unsigned,long),HANDLE,DWORD);
 API long CallNextHookEx(HANDLE,int,unsigned,long);
@@ -64,6 +66,7 @@ static HANDLE pending_tooltip,tooltip_owner;static DWORD tooltip_due;
 static RECT tooltip_rect;static POINT tooltip_point;
 static HANDLE pending_activation;static DWORD activation_due;
 static HANDLE tracked_menu,menu_tray;static DWORD menu_opened_at,menu_external_since;
+static HANDLE pending_menu_restore;static DWORD menu_restore_due,menu_restore_deadline;
 static POINT menu_click;static int click_in_menu;
 static char output[2048];static unsigned pos;
 static void text(const char *s){while(*s&&pos<sizeof(output)-64)output[pos++]=*s++;}
@@ -182,9 +185,24 @@ static int is_wecom_menu(HANDLE w){
     if(!w||!IsWindowVisible(w)||!GetClassNameA(w,cls,sizeof(cls))||!same(cls,"DuiMenuWnd"))return 0;
     GetWindowThreadProcessId(w,&pid);return pid==main_pid;
 }
+static int is_tray_menu_group(HANDLE w){
+    /* A submenu's PerryShadowWnd can briefly become foreground on X11.
+       Accept only same-process menu/shadow owner chains reaching this popup;
+       main-window shadows and unrelated application menus do not qualify. */
+    for(unsigned depth=0;w&&depth<16;depth++){
+        char cls[128];DWORD pid=0;
+        if(!IsWindowVisible(w)||!GetClassNameA(w,cls,sizeof(cls)))return 0;
+        GetWindowThreadProcessId(w,&pid);if(pid!=main_pid)return 0;
+        if(w==tracked_menu)return same(cls,"DuiMenuWnd")&&GetParent(w)==main_window;
+        if(!same(cls,"DuiMenuWnd")&&!same(cls,"PerryShadowWnd"))return 0;
+        w=GetParent(w);
+    }
+    return 0;
+}
 static void dismiss_tray_menu(const char *reason){
     HANDLE w=tracked_menu;tracked_menu=0;menu_external_since=0;
     if(pending_menu==w)pending_menu=0;
+    if(pending_menu_restore==w)pending_menu_restore=0;
     if(!is_wecom_menu(w)||GetParent(w)!=main_window)return;
     /* Ask the application to close normally, including its shadow/submenus. */
     BOOL posted=PostMessageA(w,0x0010,0,0); /* WM_CLOSE */
@@ -192,15 +210,28 @@ static void dismiss_tray_menu(const char *reason){
 }
 static BOOL __stdcall menu_contains_click(HANDLE w,long unused){
     RECT r;
-    if(is_wecom_menu(w)&&GetWindowRect(w,&r)&&menu_click.x>=r.left&&menu_click.x<r.right&&
+    if(is_wecom_menu(w)&&is_tray_menu_group(w)&&GetWindowRect(w,&r)&&menu_click.x>=r.left&&menu_click.x<r.right&&
        menu_click.y>=r.top&&menu_click.y<r.bottom){click_in_menu=1;return 0;}
     return 1;
 }
+static void restore_foreground_main(HANDLE w){
+    /* KDE can activate the X11 window while Wine still has WS_MINIMIZE set.
+       Wine then sends IconicState back before its host-state restore finishes.
+       Queue the app's normal restore after that transition. Only a current
+       foreground event for this prefix's visible, enabled main window counts;
+       never infer activation from a timer or from another window's focus. */
+    if(!main_window||w!=main_window||GetForegroundWindow()!=w||
+       !IsWindowVisible(w)||!IsIconic(w)||(GetWindowLongA(w,-16)&0x08000000))return;
+    BOOL posted=PostMessageA(w,0x0112,0xf120,0); /* WM_SYSCOMMAND, SC_RESTORE */
+    text("taskbar foreground restore posted=");hex(posted);text("\n");flush();
+}
 static void __stdcall foreground_changed(HANDLE hook,DWORD event,HANDLE w,long object,long child,DWORD thread,DWORD time){
-    if(!tracked_menu||object||child||(long)(time-menu_opened_at)<0)return;
+    if(object||child)return;
+    restore_foreground_main(w);
+    if(!tracked_menu||(long)(time-menu_opened_at)<0)return;
     if(!is_wecom_menu(tracked_menu)){tracked_menu=0;return;}
     /* Ignore delayed events and transitions within the tray/menu group. */
-    if(w!=GetForegroundWindow()||w==menu_tray||is_wecom_menu(w))return;
+    if(w!=GetForegroundWindow()||w==menu_tray||is_tray_menu_group(w))return;
     dismiss_tray_menu("foreground change");
 }
 static void check_tray_menu_focus(void){
@@ -209,12 +240,47 @@ static void check_tray_menu_focus(void){
         tracked_menu=0;menu_external_since=0;return;
     }
     HANDLE foreground=GetForegroundWindow();
-    if(foreground==menu_tray||is_wecom_menu(foreground)){menu_external_since=0;return;}
+    if(foreground==menu_tray||is_tray_menu_group(foreground)){menu_external_since=0;return;}
     /* Wine can clear foreground on desktop/native-app activation without a
        WinEvent. Check only while this popup lives; allow a brief handoff. */
     DWORD now=GetTickCount();
     if(!menu_external_since)menu_external_since=now;
     else if((long)(now-menu_external_since)>=100)dismiss_tray_menu("foreground left");
+}
+static void correct_tray_popup(HANDLE w,const RECT *anchor,POINT point,int tooltip);
+static void restore_tray_menu(void){
+    if(!pending_menu_restore||(long)(GetTickCount()-menu_restore_due)<0)return;
+    HANDLE w=pending_menu_restore;RECT r;
+    if(w!=tracked_menu||!is_wecom_menu(w)||GetParent(w)!=main_window||!IsIconic(main_window)||
+       (GetForegroundWindow()!=menu_tray&&GetForegroundWindow()!=w)||!GetWindowRect(w,&r)){
+        pending_menu_restore=0;return;
+    }
+    /* SHOW may arrive before WeCom has given the menu a nonzero size. */
+    if(r.right<=r.left||r.bottom<=r.top){
+        if((long)(GetTickCount()-menu_restore_deadline)>=0)pending_menu_restore=0;
+        else menu_restore_due=GetTickCount()+50;
+        return;
+    }
+    pending_menu_restore=0;
+    /* The earlier placement attempt may have seen the initial 0x0 window,
+       or KWin may have put back its pre-minimize rectangle. Recheck now;
+       the anchor guard makes this a no-op for an already corrected popup. */
+    correct_tray_popup(w,&tray_rect,tray_point,0);
+    if(!GetWindowRect(w,&r))return;
+    /* KWin iconifies a transient of a minimized owner even though Wine keeps
+       WS_MINIMIZE clear. Let our native tray helper map exactly this X11
+       window. ShowWindow would restore an empty normal_rect and lose focus.
+       The receiver validates age, prefix, PID, owner and host IconicState. */
+    unsigned request[8]={0x57434d32,(unsigned)GetPropA(main_window,"__wine_x11_whole_window"),
+                        (unsigned)GetPropA(w,"__wine_x11_whole_window"),(unsigned)GetTickCount(),
+                        (unsigned)(r.left-GetSystemMetrics(76)),(unsigned)(r.top-GetSystemMetrics(77)),
+                        (unsigned)(r.right-r.left),(unsigned)(r.bottom-r.top)};
+    if(!request[1]||!request[2]||request[1]==request[2])return;
+    HANDLE file=CreateFileA("C:\\windows\\temp\\wecom-tray-menu-request",0x40000000,7,0,2,0x80,0);
+    if(file==(HANDLE)-1)return;
+    DWORD written=0;BOOL sent=WriteFile(file,request,sizeof(request),&written,0);
+    CloseHandle(file);
+    text("tray menu native map requested=");hex(sent&&written==sizeof(request));text("\n");flush();
 }
 static void __stdcall popup_shown(HANDLE hook,DWORD event,HANDLE w,long object,long child,DWORD thread,DWORD time){
     char cls[128];DWORD pid=0;
@@ -235,6 +301,10 @@ static void __stdcall popup_shown(HANDLE hook,DWORD event,HANDLE w,long object,l
        tray_point.y<tray_rect.top||tray_point.y>=tray_rect.bottom)return;
     tracked_menu=w;menu_tray=foreground;menu_opened_at=time;menu_external_since=0;
     pending_menu=w;menu_due=GetTickCount()+50;
+    if(IsIconic(main_window)){
+        pending_menu_restore=w;menu_restore_due=GetTickCount()+100;
+        menu_restore_deadline=GetTickCount()+1000;
+    }
 }
 static void correct_tray_popup(HANDLE w,const RECT *anchor,POINT point,int tooltip){
     if(!tray_enabled||!IsWindowVisible(w)||!tray_layout_matches())return;
@@ -361,11 +431,12 @@ void mainCRTStartup(void){
         if(!watch)break;
         DWORD next_scan=GetTickCount()+1000;
         do{
-            DWORD result=MsgWaitForMultipleObjects(1,&process,0,(pending_menu||pending_tooltip||pending_activation||tracked_menu)?50:1000,0x04ff);
+            DWORD result=MsgWaitForMultipleObjects(1,&process,0,(pending_menu||pending_menu_restore||pending_tooltip||pending_activation||tracked_menu)?50:1000,0x04ff);
             if(result==0||result==0xffffffff)goto done;
             MSG message;
             while(PeekMessageA(&message,0,0,0,1)){TranslateMessage(&message);DispatchMessageA(&message);}
             correct_pending_popups();
+            restore_tray_menu();
             activate_after_tray_click();
             check_tray_menu_focus();
         }while((long)(GetTickCount()-next_scan)<0);

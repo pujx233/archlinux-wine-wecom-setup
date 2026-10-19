@@ -6,6 +6,7 @@ import fcntl
 import os
 from pathlib import Path
 import select
+import struct
 import time
 
 
@@ -27,7 +28,9 @@ def wecom_process_alive(prefix, proc_root=Path('/proc')):
             try:
                 if process.stat().st_uid != os.getuid():
                     continue
-                if (process / 'comm').read_text().strip().lower() != 'wxwork.exe':
+                # WeCom renames its main thread after startup; Linux comm
+                # then becomes UIThread even though argv[0] is WXWork.exe.
+                if (process / 'comm').read_text().strip().lower() not in ('wxwork.exe', 'uithread'):
                     continue
                 # Wine exposes the Windows image as argv[0]. Reject helper
                 # processes and arguments that merely mention WXWork.exe.
@@ -58,6 +61,61 @@ def placeholder(pixels):
     return [0x01000000 if pixel else 0 for pixel in pixels]
 
 
+class MenuRequests:
+    """Receive completed, short-lived requests from the prefix's Win32 helper."""
+    filename = 'wecom-tray-menu-request'
+
+    def __init__(self, prefix):
+        directory = prefix / 'drive_c/windows/temp'
+        self.path = directory / self.filename
+        self.pending = None
+        libc = C.CDLL(None, use_errno=True)
+        libc.inotify_init1.argtypes = [C.c_int]
+        libc.inotify_add_watch.argtypes = [C.c_int, C.c_char_p, C.c_uint32]
+        self.fd = libc.inotify_init1(os.O_NONBLOCK | os.O_CLOEXEC)
+        if self.fd < 0:
+            raise OSError(C.get_errno(), 'inotify_init1')
+        if libc.inotify_add_watch(self.fd, os.fsencode(directory), 0x8) < 0:  # IN_CLOSE_WRITE
+            os.close(self.fd)
+            raise OSError(C.get_errno(), 'inotify_add_watch')
+
+    def dispatch(self, connection, prefix):
+        try:
+            events = os.read(self.fd, 65536)
+        except BlockingIOError:
+            events = b''
+        offset, ready = 0, False
+        while offset + 16 <= len(events):
+            _, mask, _, length = struct.unpack_from('iIII', events, offset)
+            name = events[offset + 16:offset + 16 + length].split(b'\0', 1)[0]
+            ready |= bool(mask & 0x8 and name == self.filename.encode())
+            offset += 16 + length
+        if ready:
+            self.pending = None
+            try:
+                fd = os.open(self.path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                try:
+                    age = time.time() - os.fstat(fd).st_mtime
+                    data = os.read(fd, 33)
+                finally:
+                    os.close(fd)
+                if len(data) == 32 and 0 <= age <= 1:
+                    magic, main, menu, _, x, y, width, height = struct.unpack('<4I4i', data)
+                    if magic == 0x57434d32 and main and menu and main != menu:
+                        self.pending = (main, menu, (x, y, width, height), time.monotonic() + .75)
+            except OSError:
+                pass
+        if self.pending:
+            main, menu, rect, deadline = self.pending
+            # KWin may initially report Withdrawn/Normal before auto-minimizing
+            # the transient. Only wait for this request, for at most 750 ms.
+            if time.monotonic() >= deadline or connection.restore_menu(main, menu, prefix, rect) is not None:
+                self.pending = None
+
+    def close(self):
+        os.close(self.fd)
+
+
 class X11:
     def __init__(self):
         self.x = C.CDLL('libX11.so.6')
@@ -75,6 +133,8 @@ class X11:
             'XGetGeometry': ([p, u, C.POINTER(u), C.POINTER(i), C.POINTER(i)] +
                              [C.POINTER(C.c_uint)] * 4, i),
             'XFree': ([p], i), 'XPending': ([p], i), 'XNextEvent': ([p, p], i),
+            'XMapWindow': ([p, u], i),
+            'XMoveResizeWindow': ([p, u, i, i, C.c_uint, C.c_uint], i),
             'XSync': ([p, i], i), 'XGetImage': ([p, u, i, i, C.c_uint, C.c_uint, u, i], p),
             'XGetPixel': ([p, i, i], u), 'XPutPixel': ([p, i, i, u], i),
             'XDestroyImage': ([p], i), 'XCreateGC': ([p, u, u, p], p),
@@ -151,6 +211,41 @@ class X11:
             C.byref(width), C.byref(height), C.byref(border), C.byref(depth))
         return bool(ok and (width.value, height.value, depth.value) == (20, 20, 32))
 
+    def restore_menu(self, main, menu, prefix, rect):
+        # HWND/class/foreground checks happen in titlebar-managed.c. Recheck
+        # the native identity and state here; never infer a menu from its size.
+        cls = b'wxwork.exe\0wxwork.exe\0'
+        if (self.property(main, 'WM_CLASS') != cls or self.property(menu, 'WM_CLASS') != cls or
+                self.property(menu, 'WM_TRANSIENT_FOR') != [main] or
+                self.property(main, 'WM_STATE') != [3, 0]):
+            return False
+        pid = self.property(main, '_NET_WM_PID')
+        if not pid or len(pid) != 1 or self.property(menu, '_NET_WM_PID') != pid:
+            return False
+        try:
+            if not process_matches_prefix(Path('/proc/%d' % pid[0]), prefix):
+                return False
+        except OSError:
+            return False
+        x, y, width, height = rect
+        root, root_x, root_y = C.c_ulong(), C.c_int(), C.c_int()
+        rw, rh, border, depth = (C.c_uint() for _ in range(4))
+        if not self.x.XGetGeometry(self.display, self.root, C.byref(root), C.byref(root_x),
+                C.byref(root_y), C.byref(rw), C.byref(rh), C.byref(border), C.byref(depth)):
+            return False
+        if not (0 < width <= 600 and 0 < height <= 600 and 0 <= x <= rw.value-width and
+                0 <= y <= rh.value-height):
+            return False
+        if self.property(menu, 'WM_STATE') != [3, 0]:
+            return None  # Still settling; caller bounds this wait.
+        self.x.XMapWindow(self.display, menu)
+        # KWin restores its pre-minimize geometry. The Win32 helper supplies
+        # the corrected rectangle in X root coordinates; queue it after map.
+        self.x.XMoveResizeWindow(self.display, menu, x, y, width, height)
+        self.x.XSync(self.display, 0)
+        print('Tray menu: native map requested for %#x (owner %#x)' % (menu, main), flush=True)
+        return True
+
     def target(self, prefix):
         main_found, icons, processes = False, [], {}
         for window in self.windows():
@@ -208,7 +303,7 @@ class X11:
         finally:
             self.x.XDestroyImage(image)
 
-    def run(self, prefix):
+    def run(self, prefix, menu_requests=None):
         deadline, next_scan, absent_since, seen, count = time.monotonic() + 120, 0, None, False, 0
         event = (C.c_long * 24)()  # XEvent includes a 24-long padding member.
         while True:
@@ -236,8 +331,12 @@ class X11:
                 count += 1
                 if count == 1:
                     print('Tray placeholder: black blink frame replaced', flush=True)
+            if menu_requests:
+                menu_requests.dispatch(self, prefix)
             if not self.x.XPending(self.display):
-                select.select([self.fd], [], [], max(0, min(1, next_scan - time.monotonic())))
+                readers = [self.fd] + ([menu_requests.fd] if menu_requests else [])
+                timeout = .05 if menu_requests and menu_requests.pending else 1
+                select.select(readers, [], [], max(0, min(timeout, next_scan - time.monotonic())))
 
     def close(self):
         self.attach(0)
@@ -252,7 +351,7 @@ def main():
             'KDE' not in os.environ.get('XDG_CURRENT_DESKTOP', '').split(':') or
             os.environ.get('WECOM_TRAY_ICON_FIX') == '0'):
         return
-    connection = None
+    connection = menu_requests = None
     try:
         prefix = args.prefix.resolve(strict=True)
         with (prefix / 'wecom-compat/.tray-icon.lock').open('a') as guard:
@@ -261,10 +360,13 @@ def main():
             except BlockingIOError:
                 return
             connection = X11()
-            connection.run(prefix)
+            menu_requests = MenuRequests(prefix)
+            connection.run(prefix, menu_requests)
     except (OSError, KeyboardInterrupt) as error:
         print('Tray placeholder: stopped (%s)' % error, flush=True)
     finally:
+        if menu_requests:
+            menu_requests.close()
         if connection:
             connection.close()
 
