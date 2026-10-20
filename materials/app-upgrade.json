@@ -1,0 +1,40 @@
+{
+  "from_version": "5.0.11.6018",
+  "version": "5.0.12.6018",
+  "status": "normal-use",
+  "version_manifest": "versions.json",
+  "deployment_method": "existing-prefix-upgrade",
+  "wine": "11.20",
+  "installer": {
+    "filename": "WeCom_5.0.12.6018.exe",
+    "sha256": "61ec2507ba8a579bfdb95c459da12d3d745b43f4f4c3e45fa87979410b6d1af1"
+  },
+  "main_executable": {
+    "path": "WXWork.exe",
+    "sha256": "b2e62662230d46e1146a6ca0c034ae357a7ee0b8f732595a227e7a6991243fe7"
+  },
+  "wemail": {
+    "version": "5.0.12.5542",
+    "path": "5.0.12.6018/wemail/WeMail.exe",
+    "sha256": "2c4dcf083ffdde154c4bfe73ea333d71cef3d7cc4c0bc14a18b8b1a649de9915",
+    "qt_config": "configs/qt.conf"
+  },
+  "cef": {
+    "component": "5.0.79.5483",
+    "chromium": "129.0.6668.101",
+    "architecture": "x86_64",
+    "profile": "wine-builtin",
+    "layout": "page-aligned",
+    "file_count": 30,
+    "manifest": "cef64-vendor-manifest.json",
+    "libcef_sha256": "57d538f19f59cb2d319d753f0d33dec803c48b761fd92f478fd4fcf08647f3d4"
+  },
+  "retained_configuration": [
+    "wine-prefix-and-account-data",
+    "font-and-richedit-configuration",
+    "ime-bridge",
+    "titlebar-taskbar-and-tray-helpers",
+    "chat-file-menu-click-forwarding",
+    "native-spreadsheet-associations"
+  ]
+}

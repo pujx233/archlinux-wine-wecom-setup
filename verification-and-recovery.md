@@ -1,10 +1,10 @@
 # 使用与维护
 
-从空 prefix 安装见[安装步骤](install-from-scratch.md)，配置原因见[配置说明](configuration-rationale.md)。以下命令在普通用户的 Bash 终端执行，路径按实际环境调整。
+本页对应 **企业微信 5.0.12.6018 / 系统 Wine 11.20**，只说明正式配置的使用、更新和回退。修复原因见[配置说明](configuration-rationale.md)，新装见[安装步骤](install-from-scratch.md)。命令在普通用户的 Bash 终端执行。
 
 ## 日常启动与开关
 
-打开 `WeCom-Native-Wine.desktop`，或从终端运行：
+使用 `WeCom-Native-Wine.desktop`，或执行：
 
 ```bash
 export WECOM_PREFIX="$HOME/Works/Softwares/wine/WeCom"
@@ -12,25 +12,21 @@ test -f "$WECOM_PREFIX/system.reg"
 bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 ```
 
-启动器从 prefix 内加载配套文件，日常运行不依赖仓库。直接执行 `wine WXWork.exe` 会跳过这些检查与窗口修复。
+启动器从 prefix 内加载辅助文件，日常运行不依赖仓库。直接执行 `wine WXWork.exe` 会跳过兼容配置。
 
-| 环境变量 | 设置为 `0` 时 |
+| 环境变量 | 设置为 0 时 |
 |---|---|
-| `WECOM_TITLEBAR_FIX` | 停用标题栏、边缘缩放、任务栏恢复、托盘坐标、最小化菜单显示、菜单关闭和点击激活修复；保留启动前锁检查与图标修复 |
-| `WECOM_TRAY_FIX` | 只停用托盘菜单和悬浮提示的坐标修正 |
-| `WECOM_TRAY_ICON_FIX` | 停用托盘黑块占位和最小化菜单的原生显示助手 |
-| `WECOM_IME_FIX` | 停用邮件及内嵌页面的 XIM 提交桥接；恢复系统 Wine 的输入行为 |
-| `WECOM_VPROT_FIX` | 停用专用页保护元数据修复，改用系统 Wine；不撤销 CEF 文件对齐或输入桥接 |
+| `WECOM_TITLEBAR_FIX` | 停用标题栏、边缘缩放、任务栏恢复、托盘菜单与点击激活、聊天文件菜单修复 |
+| `WECOM_TRAY_FIX` | 仅停用托盘菜单和提示的坐标修正 |
+| `WECOM_TRAY_ICON_FIX` | 停用托盘空白帧及最小化菜单的原生显示 |
+| `WECOM_IME_FIX` | 停用邮件及内嵌页面的 XIM 提交桥接 |
+| `WECOM_VPROT_FIX` | 停用专用 Wine 运行时，使用系统 Wine |
 
-`WECOM_VPROT_RUNTIME` 可指定专用运行时的绝对路径；默认目录为 `${XDG_DATA_HOME:-$HOME/.local/share}/wecom-runtimes/wine-11.19-vprot-e38a364b`。不安装时继续使用系统 Wine；已有运行时不满足固定版本／哈希时警告并回退。安装步骤见 [Wine 内存修复](experiments/wine-vprot/README.md#安装已验证产物)。
-
-开关在启动时读取；先完整退出企业微信，再设置开关启动。例如：
+开关在启动时读取，需先完整退出再设置。改变屏幕排列或缩放后也需重启，以重新计算托盘坐标。例如：
 
 ```bash
 env WECOM_TRAY_FIX=0 bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 ```
-
-改变屏幕排列或缩放后，也需退出再启动以重新计算。仅最小化或重复点击桌面入口不会刷新已运行的辅助程序。
 
 ## 更新启动辅助文件
 
@@ -61,163 +57,74 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 
 源码、EXE、SO、脚本和覆盖列表配套更新；不要覆盖仍由进程映射的 EXE 或 SO。更新后按下面清单验收。恢复旧辅助版本时，停止目标 prefix，再从 `setup-backups/compat-update-*/wecom-compat/` 还原。
 
-## 验证范围
+## 配置边界
 
-按修复功能分别记录部署和验证结果。材料一致性、离线回归与真实应用操作是不同层次的验证；某项通过不代表全部功能均已验收。
-
-| 范围 | 验证结果与证据 |
-|---|---|
-| 78 文件 CEF + winetricks | 独立 prefix 与日常环境重启后，邮件、文档、工作台页面、中文输入和显示正常；实际模块路径已核对。见[组件验证](materials/winetricks.md#独立验证与精简范围)及[日常迁移](materials/winetricks.md#日常环境迁移) |
-| fcitx5 输入桥接 | 日常环境聊天、邮件标题和正文、文档正文、审批输入框均能提交中文；主程序与 WeMail 的模块加载已核对，日常诊断日志关闭 |
-| 30 文件 CEF + winecfg | 独立 prefix 逐步替换 `vcruntime140_1`、46 个 API-set 和 `dbghelp`，三轮独立重启后页面和中文输入均正常；正式环境也已切换，用户确认页面、中文输入和显示正常，见[部署记录](materials/winecfg-deployment.json)。见[试验记录](materials/winetricks.md#winecfg-覆盖试验) |
-| 启动与窗口 | 启动锁修复后一次主界面显示约 4.4 秒；标题栏遮挡、激活、连续拖动和边缘缩放已验收。间歇拖动失败未再次复现，尚未定位独立原因 |
-| 双屏托盘 | 两屏菜单／提示位置、点击外部关闭、菜单内部操作、消息空白帧、左键置前及最小化恢复均已验收；菜单关闭另有焦点探针证据 |
-
-未验收：邮件收发、审批提交、长文本和复杂组合输入、会议与其他插件、长期稳定性、整理后的完整从零安装、宿主重启及其他屏幕排列／旋转。30 文件试验未测试实际崩溃转储和报告流程，也未重新完整验收窗口和托盘交互。
-
-30 文件方案的回退备份位于 `setup-backups/cef-builtin-*/`，包含 48 个移出文件、原覆盖列表、桌面入口及仅恢复相关六个注册表值的 `rollback.reg`，不包含账号快照。
-
-`materials/versions.json` 保存 Wine 11.18 及安装材料快照；启动和窗口修复的验证环境为 Wine 11.19。运行状态应以实际模块路径和哈希为准。
+正式部署使用原位升级，空 prefix 按安装文档配置。材料一致性不等于所有业务功能都已覆盖；实际邮件收发、审批提交、会议、复杂输入、长期稳定性和其他屏幕布局需结合用途检查。CEF 内建 dbghelp 的配置不保证所有崩溃报告流程兼容。
 
 ## CEF 映像内存共享
 
-已在独立 prefix 的真实桌面窗口完成对齐版启动、登录与页面验收；用户确认已有文档正文和邮件页面正常。核对了目标 prefix、实际 CEF 映射路径和 SHA256，排除把日常原版登录当作测试版登录的情况。原版 Xvfb 测试曾因会话过期中断，不作为对齐版验收证据。
+正式 CEF 为 **30 文件 + 页对齐**。仅 libcef.dll 使用[页对齐指纹](materials/cef64-page-aligned.json)，其他文件仍匹配厂商清单。安装工具保留源文件并生成新副本，日常启动不改写 DLL。
 
-每个 CEF 映像私有脏页从原版约 232 MiB 降至约 15 MiB；11 个 CEF 进程的映像合计 PSS 为 308.34 MiB。登录后的总 PSS 约 2.42 GiB（7 个 CEF，2 个 renderer），打开文档和邮件后约 4.66 GiB（11 个 CEF，6 个 renderer）；页面数量不同，不能宣称整个应用固定节省某个百分比。探针同负载两进程触页对比、源码依据、复建 SHA256 与 REA 入口核查见 [实验记录](experiments/cef-memory/README.md)及[数值证据](experiments/cef-memory/results.json)。
-
-内存转换器的 9 项测试通过；实际原件经仓库脚本生成的副本指纹一致，30 文件原版与对齐版均通过对应校验。生成工具不自动部署、不接受未知版本、不覆盖已有文件；使用和回退见[生成、安装与回退](experiments/cef-memory/README.md#生成安装与回退)。
-
-修复已部署到正式环境，仅替换 `compatible_web/libcef.dll`，保留账号数据。原件备份为 prefix 下的 `setup-backups/cef-memory-20261016-fg5wyhpb/libcef.dll`，哈希已复核；正式 DLL 实际加载路径和输出 SHA256 均匹配。用户确认正式环境文档正文、邮件页面和常用中文输入正常，见[部署记录](materials/cef-memory-deployment.json)。
-
-正式样本有 11 个 CEF、6 个 renderer，总 PSS **4.72 GiB**；CEF 映像合计 PSS **311.52 MiB**，每进程匿名映像 **14.84–15.28 MiB**。新复制的文件页尚未写回时也可能计入 `Private_Dirty`，不能将该字段全部等同匿名副本。正式环境仍会随打开的业务页面增长内存，本修复只解决重复加载 CEF 映像。
-
-未完整验收复杂组合输入、编辑保存、邮件收发、会议、GPU 压力、更新与长期稳定性。文档预加载未关闭。对齐版使 DLL 签名失效，原件备份必须保留；默认校验仍使用厂商哈希，验证对齐版需显式传 `--cef-layout page-aligned`。
+回退时停止目标 prefix，将安装前保存的厂商 libcef.dll 恢复到对应版本的 `compatible_web/`，再以 `--cef-layout vendor` 校验。新装步骤将原件保存为 `setup-backups/libcef.vendor.dll`；已有安装须以自身备份为准。页对齐版签名失效，升级时不可对未知 DLL 强行套用旧指纹。
 
 ## Wine 页保护元数据
 
-1 TiB 预留区对应的约 256 MiB Wine 页保护元数据是独立于 CEF 映像的内存开销。补丁、同条件 A/B、内存语义和源码构建证据见 [Wine vprot](experiments/wine-vprot/README.md)。专用运行时已在正式环境启用，不替换全局 Wine、不回写隔离账号副本。
+当前系统 Wine 11.20 不加载专用 11.19 vprot 运行时。[固定清单](configs/wine-vprot-runtime.sha256)同时约束系统版本、依赖和候选文件，防止混用不兼容的 Wine 模块。
 
-正式样本含 31 个 Wine 进程、7 个 renderer，总 PSS **3007.55 MiB**；renderer 约 **50.1–286.4 MiB**。实际 ntdll 路径、正式 prefix、IME 桥接与中文区域设置均核对，5 个可见窗口响应正常，用户确认登录、聊天切换、文档正文、邮件页和中文输入正常。统计不含 Python 辅助程序、内核计费与 GPU 专有分配，也不是严格的应用总量 A/B。[部署清单](materials/wine-vprot-deployment.json)不含账号数据。
+运行时选择保留 `WECOM_VPROT_RUNTIME` 绝对路径配置；默认位于用户数据目录的 `wecom-runtimes/wine-11.19-vprot-e38a364b`。仅当系统版本和全部指纹匹配时使用，缺失或不匹配则回退系统 Wine。需要停用时，完整退出后设置 `WECOM_VPROT_FIX=0`；持续停用可把该变量加入桌面入口的 `Exec=env ...`。
 
-仓库启动器使用可移植用户目录及随安装复制的校验清单；日常安装使用机器固定路径，两者不是同一个文件哈希，尚未成套同步。离线回归覆盖运行时选择、版本／哈希回退、安装拒绝覆盖／符号链接及补丁原样辅助函数；这些测试不执行 Wine 或真实 UI。
-
-完整退出后用 `WECOM_VPROT_FIX=0` 可单次回退；持续停用和启动器备份恢复见[回退说明](experiments/wine-vprot/README.md#验收与回退)。文档预加载保持不变。隔离短时 PSS 有轻微增长，长期、会议和实际收发／编辑尚未验收。
+专用运行时的[正式源码补丁](patches/wine-11.19-vprot.patch)和[安装器](scripts/install-wine-vprot-runtime.py)保留版本约束。安装器只接受固定指纹的本地产物，输出必须是新目录，不修改系统 Wine 或 prefix。Wine 运行期间不要升级其共享依赖。
 
 ## 启动路径与慢启动等待
 
-仓库启动器在切换目录前解析 `WECOM_PREFIX` 的绝对物理路径，修复相对 prefix 定位漂移；这一改动尚未同步至日常安装。标题栏和托盘助手已根据目标 prefix 的应用进程存活状态等待，避免主窗口超过 120 秒才出现时提前退出。两个助手已随任务栏和托盘修复部署，真实慢启动尚未验收。Python 助手接受主进程改名后的 `UIThread`，同时核对执行参数和 prefix，避免误认其他应用。
-
-等待边界如下：最初 120 秒始终未确认目标进程存在时，结束初始等待，包括观测未知的情况；这只是宽限到期，不是确认应用已退出。观察进程后，窗口缺失仍继续等待，只有连续确认进程不存在满 6 秒才退出；期间进程重新出现则继续等待，权限或枚举结果未知会清空缺失计时。标题栏绑定后仍监视原进程句柄，并只接收同一 PID 的替换主窗口。
-
-离线回归覆盖无窗口慢启动、未启动、进程退出、短暂交接、观测未知、进程／prefix 过滤、含空格路径及相对符号链接；C harness 含 7 个确定性启动场景。运行方法见[仓库验证](#仓库验证)。
-
-## IME 整段输入提交
-
-完整修复仍未完成：生产桥接逐个投递 `WM_CHAR`，中途失败可能只保留部分提交。隔离 Wine 11.19 的[整段入队实验](experiments/wine-ime-commit/README.md)已通过 64→64 与 32→64 位双进程测试，每轮 69,895 个 UTF-16 单元内容、数量与顺序一致；无效请求不产生字符。窗口中途销毁测试同时确认：接受 3 个单元后，接收端只处理 1 个即退出，队列接受不等于编辑器完整写入。实验未替换日常 Wine，尚未通过真实企业微信验收；生产桥接的常用输入成功记录不能作为实验方案的验收结果。
+启动器将 prefix 解析为绝对物理路径。窗口助手依据目标应用进程存活状态等待，避免主窗口较晚出现时修复失效；等待边界见[配置原因](configuration-rationale.md#启动等待)。已有安装通过上面的辅助文件更新步骤成套同步。
 
 ## 任务栏最小化恢复
 
-`titlebar-managed.c` 和配套 32 位 EXE 复用前台事件监听，在企业微信主窗口成为前台却仍标记为最小化时补发 `SC_RESTORE`。修复已部署，启动器自动加载助手；原文件备份在 prefix 的 `setup-backups/taskbar-restore-*`。原因与触发边界见[任务栏最小化恢复](configuration-rationale.md#任务栏最小化恢复)。
-
-验证结果：C harness 的 8 个场景检查恢复命中、已恢复、隐藏、禁用、前台已切走、其他窗口、未绑定主窗口和重复事件。正式会话中，应用标准最小化命令与 X11 桌面最小化各执行 10 轮：最小化保持后再发送任务栏等效 `_NET_ACTIVE_WINDOW` 请求，全部恢复且稳定保持前台；已恢复窗口重复激活也通过。最终 Windows 状态为可见、非最小化、启用。这些自动验证未检查窗口几何，不能证明位置和尺寸正常，也不替代真实任务栏、托盘及其他应用切换的人机验收。
-
-部署时不可直接复用旧 Wine 子进程的完整环境：其中包含指向已关闭文件描述符的内部服务器连接。应按启动器重新构建公开环境，并重新计算托盘几何；否则新助手会报 `Bad server socket`。回退时正常退出企业微信，将对应备份中的 `titlebar-managed.c` 和 `.exe` 复制回 `wecom-compat/scripts/` 后按原启动器启动；不要覆盖其他适配文件。
+任务栏恢复使用窗口助手的前台事件回调，仅恢复当前绑定且仍最小化的主窗口。由 `WECOM_TITLEBAR_FIX` 控制，正常最小化和托盘隐藏不触发自动弹回。
 
 ## 最小化托盘菜单与二级菜单
 
-修复已部署到 `titlebar-managed.c` / `.exe` 与 `tray-icon.py`。窗口助手通过请求文件交给 Python 助手，以原生 X11 请求显示菜单并保留校正后的矩形。安装时需成套更新这三个文件，并启用 `WECOM_TITLEBAR_FIX` 和 `WECOM_TRAY_ICON_FIX`；`WECOM_TRAY_FIX=0` 仅关闭坐标换算。
+`titlebar-managed.c/.exe` 与 `tray-icon.py` 成套工作，在主窗口最小化时显示并定位托盘菜单。子菜单及其阴影按同一菜单组处理，点击外部关闭根菜单，保留主窗口最小化状态。
 
-验证：C 菜单守卫包含 12 个场景；原生请求包含真实 inotify 写入测试和 PID、prefix、owner、状态过滤测试。菜单创建阶段可能短暂处于 Normal/Withdrawn 状态，助手最多等待 750 ms，并在发出请求前复核坐标。现场确认原生 map 可以持续显示菜单，用户确认菜单位置正常、主窗口仍最小化；仅检查 `WM_STATE` 不能证明位置正确。
+此功能要求 `WECOM_TITLEBAR_FIX` 和 `WECOM_TRAY_ICON_FIX` 均启用；`WECOM_TRAY_FIX=0` 只关闭坐标换算。回退时恢复同一备份中的整套辅助文件，避免不同版本的请求格式或菜单逻辑混用。
 
-诊断日志：`wecom-titlebar.log` 的 `tray menu native map requested` 表示 Win32 请求已发出；`wecom-tray-icon.log` 的 `Tray menu: native map requested` 表示原生窗口守卫通过并发出显示请求，两者都不单独等于视觉验收成功。验收须检查菜单非零尺寸、托盘旁位置、停留数秒、点击外部关闭，以及主窗口继续最小化。再恢复主窗口，确认普通托盘菜单和任务栏恢复仍正常。
+## 聊天文件菜单与原生表格打开
 
-二级菜单通过同进程菜单／阴影的 owner 链识别当前菜单组，避免子菜单阴影成为前台时误发 `WM_CLOSE`；点击外部及外部前台切换仍会关闭根菜单。菜单归属、循环链保护、阴影焦点交接和外部关闭的 C harness 已通过。正式会话自动展开二级菜单两轮均通过：两个 X11 菜单持续为 Normal，Win32 尺寸正常，根菜单在托盘旁，主窗口继续 Iconic 且原几何不变。自动测试未点击菜单命令或改变在线状态。用户实际验收确认子菜单保持展开、点击外部关闭，托盘菜单修复验收通过。
+窗口助手转发聊天菜单点击，避免菜单因焦点切换而提前销毁，支持另存为、文件及文字复制。菜单按下时销毁后会消耗配对释放，避免误点新对话框。该功能随 `WECOM_TITLEBAR_FIX` 控制。
 
-回退应恢复同一次备份中的三个文件。当前部署前备份为 `setup-backups/taskbar-restore-20261016-180310`；该备份已有一级菜单修复，尚无二级菜单阴影焦点修复。如需退到不含菜单恢复实验的任务栏版本，窗口助手使用 `taskbar-restore-20261016-173512` 中的 C/EXE，Python 使用 `taskbar-restore-20261016-174858` 中的 `tray-icon.py`。正常退出企业微信后再替换，保留账号和其余配置。
+xls/xlsx 通过 [native-spreadsheet-open.reg](configs/native-spreadsheet-open.reg)交给宿主默认应用，正式配置使用 `wps-office-et.desktop`。新装命令见[表格关联](install-from-scratch.md#9-配置表格文件打开)。
 
-## 仓库验证
+已有 prefix 导入前先备份 `HKCR\.xls`、`HKCR\.xlsx`、`HKCR\WeCom.NativeSpreadsheet` 和宿主原默认程序。该关联按需导入，启动器不会覆盖已有选择。回退时恢复原值；原本不存在的键应移除新增项，宿主默认应用单独恢复。
 
-在仓库根目录运行：
+## 使用检查
 
-```bash
-python3 -m unittest discover -s tests -v
-```
-
-全套 **62 项测试**通过，包含 C harness、启动器路径与运行时选择、CEF 转换器、实验 IME 及托盘 inotify 请求。需要 Python 3、Bash、GCC、patch 和 X11 开发头文件；测试使用临时目录及模拟 API／时钟，不启动 Wine 或真实 UI。Windows 助手的重建方法见[辅助文件维护](#辅助文件维护)。离线通过不代替下面的应用验收。
-
-## 验收清单
-
-| 检查 | 通过条件 |
+| 功能 | 预期结果 |
 |---|---|
-| 启动和登录 | 中文界面正常，登录后及时出现主界面 |
-| 文档 | 能看到列表，点击正文后可以加载并操作 |
-| 中文输入 | 编辑、删除中文和标点正常，无需发送测试消息 |
-| 邮件中文输入 | 标题、正文分别输入并选词，连续输入不丢字、不重复；再确认聊天输入正常，测试内容不要发送 |
-| 文档和审批中文输入 | 在草稿文档正文、审批说明框输入并选词，不丢字、不重复；不要提交审批或保存测试修改 |
-| 悬浮提示 | “截图”“图片”“文档”“文件”“查找聊天记录”无方框 |
-| 标题栏 | 单击能置前，切换其他应用时整体退后，拖动和最小化/恢复正常，无重复任务栏项 |
-| 任务栏恢复 | 最小化后点击任务栏标签能恢复并保持前台；正常最小化不会自动弹回，托盘打开与切换其他应用正常 |
-| 边缘缩放 | 左右和底部向外拖动可放大，向内缩小遵守最小尺寸限制 |
-| 托盘菜单 | 主窗口显示和最小化时分别右键；菜单出现且靠近图标，最小化时主窗口不弹出；在各屏幕分别关闭、重开；点击其他应用、桌面或主窗口空白处后关闭，菜单内部悬停和点击正常；应用内部菜单正常 |
-| 托盘悬浮提示 | 在各屏幕悬停图标，提示靠近图标且留在屏幕内；移开鼠标后正常消失 |
-| 托盘消息提醒 | 来消息后正常图标与空白占位交替，无黑块；左键点击能激活主窗口 |
-| 其他功能 | 按实际用途检查工作台和邮件 |
+| 启动、登录、聊天 | 中文界面及主窗口正常，切换聊天可用 |
+| 文档与邮件页面 | 列表和正文正常加载，页面可以操作 |
+| 中文显示与输入 | 常用输入框可选词、编辑和删除中文，提示无方框 |
+| 标题栏与任务栏 | 点击置前、拖动、边缘缩放和最小化恢复正常 |
+| 托盘 | 各屏幕菜单及提示靠近图标，子菜单保持，外部点击关闭；主窗口最小化时仍可打开菜单 |
+| 消息提醒 | 正常图标与空白占位交替，左键恢复并激活主窗口 |
+| 聊天文件 | 另存为、复制、打开和普通文字复制可用，表格由 WPS 打开 |
 
-材料/提示字体诊断可使用下面的只读检查；`status-font-probe.exe` 不带参数只检查，加 `-set` 才保存设置：
+只检查输入时无需发送消息、提交审批或保存无关修改。安装材料可用以下只读命令核对：
 
 ```bash
 export WECOM_SETUP="/path/to/archlinux-wine-wecom-setup"
 export WECOM_PREFIX="$HOME/Works/Softwares/wine/WeCom"
-export WECOM_VERSION_DIR="$WECOM_PREFIX/drive_c/Program Files (x86)/WXWork/5.0.11.6018"
-test -f "$WECOM_PREFIX/system.reg"
-env -u LC_ALL WINEPREFIX="$WECOM_PREFIX" WINEDEBUG=-all \
-  LANG=zh_CN.UTF-8 LC_CTYPE=zh_CN.UTF-8 LC_MESSAGES=zh_CN.UTF-8 \
-  WINEDLLOVERRIDES=winemenubuilder.exe=d \
-  /usr/bin/wine "$WECOM_SETUP/scripts/status-font-probe.exe"
+export WECOM_VERSION_DIR="$WECOM_PREFIX/drive_c/Program Files (x86)/WXWork/5.0.12.6018"
 python3 "$WECOM_SETUP/scripts/verify-materials.py" \
-  --installer "$WECOM_SETUP/assets/WeCom_5.0.11.6018.exe" \
-  --cef-profile wine-builtin --cef-dir "$WECOM_VERSION_DIR/compatible_web" \
+  --installer "$WECOM_SETUP/assets/WeCom_5.0.12.6018.exe" \
+  --cef-profile wine-builtin --cef-layout page-aligned --cef-dir "$WECOM_VERSION_DIR/compatible_web" \
   --richedit "$WECOM_PREFIX/drive_c/windows/syswow64/riched20.dll" \
   --fonts-profile cn --fonts-dir "$WECOM_PREFIX/drive_c/windows/Fonts"
 ```
 
-## 按现象定位
-
-| 现象 | 优先检查 |
-|---|---|
-| 登录后恰好等待约五分钟 | [Boost 初始化锁](configuration-rationale.md#启动等待)及 `wecom-startup.log`；不要自动删除 `CUR_LOGIN_UIN_KEY` |
-| 慢启动后标题栏／托盘修复未生效 | 核对 prefix 内辅助文件版本与 `wecom-titlebar.log`／`wecom-tray-icon.log`；旧版可能在主窗口出现前已等满 120 秒退出，见[慢启动等待修复](#启动路径与慢启动等待) |
-| 正文白屏、renderer 退出 | [实际加载的 CEF 版本和架构](configuration-rationale.md#文档页面)、新增 Crashpad 转储 |
-| 工作台可用，但文档列表空白 | WeMail 的 `wemail/qt.conf`、Qt 感知模式和父窗口；renderer 存活不等于嵌入正常 |
-| MSVCP140 缺失导入 | 配套 DLL 是否存在，启动器的覆盖列表和实际加载路径 |
-| 水印或正文方框 | [字体文件、GDI 与 DirectWrite 映射](configuration-rationale.md#字体与输入)；仅看 Linux `fc-match` 不够 |
-| 只有编辑框方框 | x86 RichEdit 校验及 native 加载情况 |
-| 邮件/文档/审批有候选框但选字后不出字 | `ime-bridge.so` 是否存在且由启动器加载、`WECOM_IME_FIX` 是否开启；不是依靠重装字体解决 |
-| 只有悬浮提示方框 | StatusFont 是否生效，设置后是否完整重启 |
-| 标题栏盖在最前或点击不激活 | [窗口辅助程序](configuration-rationale.md#标题栏与边缘缩放)是否运行、标题栏样式是否已调整 |
-| 边缘不能拖动 | 阴影鼠标穿透是否生效；先向外放大，当前布局最小尺寸为 `986×650` |
-| 托盘菜单或悬浮提示偏移 | [逐屏坐标映射](configuration-rationale.md#多屏托盘菜单与悬浮提示)与 `wecom-titlebar.log`；分别查看 `tray menu` 或 `tray tooltip coordinate correction`，布局改变后重新启动 |
-| 托盘菜单点击外部不消失 | [菜单关闭处理](configuration-rationale.md#托盘菜单关闭)及日志中的 `tray menu dismiss`；核对触发原因和 `posted` 结果 |
-| 托盘消息提醒闪黑块 | [空白占位辅助程序](configuration-rationale.md#托盘消息提醒)及 `wecom-tray-icon.log`；确认图标尺寸和像素仍匹配已验证情况 |
-| 托盘左键只恢复、不置前 | [激活权限处理](configuration-rationale.md#托盘点击激活)及 `wecom-titlebar.log` 中的 `tray left-click activation` 结果 |
-| 最小化时托盘右键没有菜单 | [最小化菜单修复](#最小化托盘菜单与二级菜单)，核对两个助手及其日志；同时核对窗口状态和矩形 |
-| 最小化后任务栏点击无效、托盘可打开 | [任务栏恢复修复](#任务栏最小化恢复)及 `wecom-titlebar.log` 中的 `taskbar foreground restore posted` 结果；确认运行的是更新后的窗口助手 |
-
-日志路径均相对于目标 prefix；`<用户名>` 按实际环境替换：
-
-| 路径 | 用途 |
-|---|---|
-| `wecom-startup.log` | 失效锁检查、跳过或备份结果 |
-| `wecom-titlebar.log` | 窗口样式、托盘监听及坐标修正 |
-| `wecom-tray-icon.log` | 托盘图标匹配与黑块替换 |
-| `drive_c/users/<用户名>/AppData/Roaming/Tencent/WXWork/Log/` | 应用日志，部分加密；`CEF/` 下为网页组件日志 |
-| `drive_c/users/<用户名>/AppData/Local/wxworkweb/User Data/Crashpad/reports/` | CEF 崩溃转储 |
-
-比较操作前后的新增日志/转储，避免把历史故障当成本次结果。普通启动保持 `WINEDEBUG=-all`，原始诊断文件留在本机。
-
 ## 重启与升级
 
-保存未完成工作后，只停止目标 prefix，不使用 `killall wine` 或 `pkill wineserver`：
+保存工作后只停止目标 prefix：
 
 ```bash
 export WECOM_PREFIX="$HOME/Works/Softwares/wine/WeCom"
@@ -227,66 +134,63 @@ env WINEPREFIX="$WECOM_PREFIX" /usr/bin/wineserver -w
 bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 ```
 
-升级前停止目标 prefix 并备份；组件备份不等于聊天数据和账号状态的完整备份。升级后检查新版本目录的 `compatible_web`、`wemail/qt.conf`、VC/UCRT DLL，以及可能被 Wine 重建的 RichEdit、字体注册和 StatusFont，再执行完整验收清单。
+### 应用版本与兼容配置
 
-未来版本是否仍需要各项修复须重新验证；不要强制沿用旧 CEF，或修改校验清单来迎合来源不明的文件。启动和停止目标 prefix 均使用系统 `/usr/bin/wine`、`/usr/bin/wineserver`。
+新装、升级及正式修复统一使用 [versions.json](materials/versions.json)，当前为企业微信 **5.0.12.6018**。[配置清单](materials/app-upgrade.json)保存主程序、WeMail 和 CEF 指纹。新版本应重新确认兼容组件，不强制沿用不匹配的 CEF。
+
+1. 核对安装包版本及 SHA256，保存工作并退出目标 prefix。
+2. 在 prefix 外备份完整环境、实际存放聊天数据的 Documents/WXWork 及桌面入口。Documents 若为宿主目录链接，只复制 prefix 不会包含链接目标。
+3. 在目标 `WINEPREFIX` 中运行安装包 `/S`。安装器可能清理旧版本目录，兼容配置应从备份读取。
+4. 保留新版原始网页组件，在新版本目录应用成套 x64 CEF、页对齐和 WeMail Qt DPI 配置。保留字体、RichEdit、输入桥接、窗口助手和 WPS 关联。
+5. 核对组件与配置，通过原桌面入口启动并执行使用检查；在同一提交中更新默认版本、指纹和 setup 文档。
+
+完整回退应恢复应用、注册表及配套账号数据；先保存升级后产生的数据，不能假定旧程序可以读取新版数据库。组件原件备份不等于账号数据的完整备份。
 
 ## 单项回退
 
-以下方法要求对应备份实际存在，恢复前须核对内容与目标版本。新安装或更新应先建立自己的备份；先停止目标 prefix，再恢复对应项目：
+先停止目标 prefix，并核对备份存在且属于对应版本：
 
-| 配置 | 方法 |
+| 配置 | 回退方法 |
 |---|---|
-| 30 文件 CEF → 原 78 文件 | 保存工作并停止目标 prefix，将 `cef-builtin-*/cef/` 的 48 个文件复制回 `compatible_web/`，恢复备份的 `dll-overrides.txt`，导入同目录 `rollback.reg`，以 `--cef-profile winetricks` 校验后重启；必须成套恢复文件与覆盖配置 |
-| CEF | 改名保存当前 `compatible_web`，将 `compatible_web.x86-original` 恢复原名；原 x86 白屏可能复现 |
-| Qt DPI | 保存并移走新增 `wemail/qt.conf` |
-| VC/UCRT | 备份后只移除对应 DLL 覆盖项，保留其他配置 |
-| RichEdit | 将 `setup-backups/riched20.dll` 放回 `windows/syswow64/`，移除启动器的 `riched20=n,b`；若用过 `winetricks riched30`，同时恢复其设置的 `HKCU\Software\Wine\DllOverrides\riched20`，还原备份的 `msls31.dll`（有 `msls31.was-absent` 标记时才移走新增文件） |
-| StatusFont | 从 `setup-backups/window-metrics.reg` 恢复原 `StatusFont` 二进制值，避免覆盖其他窗口参数 |
-| 字体映射 | 根据安装前导出值逐项还原；`.reg` 导入只合并，不会自动删除新增键值 |
-| 窗口/托盘修复 | 使用[启动开关](#日常启动与开关)停用，或还原更新前的整套辅助文件；`WECOM_TRAY_ICON_FIX=0` 会同时停用图标占位和最小化菜单原生显示 |
-| 邮件/文档/审批输入桥接 | 设置 `WECOM_IME_FIX=0` 后完整重启，或停止后恢复配套辅助文件备份 |
-| Wine vprot 元数据修复 | 完整退出目标 prefix，设置 `WECOM_VPROT_FIX=0` 再启动；保留 CEF、输入桥接及账号数据 |
-
-备份命名可能与新装步骤不同，恢复前需核对备份内容与目标路径。
+| CEF 页对齐 | 恢复厂商 libcef.dll，以 vendor 布局校验 |
+| 成套 CEF | 保存当前目录并恢复原组件目录；原 x86 页面兼容问题可能重新出现 |
+| Qt DPI | 恢复原 wemail/qt.conf；原本不存在时移走新增文件 |
+| DLL 覆盖 | 按安装前值恢复对应项，保留其他覆盖 |
+| RichEdit | 恢复原 riched20.dll、msls31.dll 及覆盖值；只有原本缺失时才移走新增文件 |
+| StatusFont | 从 window-metrics.reg 恢复原 StatusFont 值，保留其他窗口参数 |
+| 字体映射 | 逐项恢复安装前值；reg 导入只合并，不会自动删除新增键 |
+| 窗口、托盘、输入桥接 | 使用启动开关停用，或恢复同次备份中的整套辅助文件 |
+| 表格关联 | 恢复 Wine 原关联和宿主原默认程序 |
+| 专用 Wine | 完整退出后设置 WECOM_VPROT_FIX=0 |
 
 ## 辅助文件维护
 
 | 文件 | 职责 |
 |---|---|
-| `launch-wecom.sh` | 固定启动环境并按顺序运行辅助检查 |
-| `prepare-startup.py` | 仅在空闲 prefix 中备份已识别的失效共享锁 |
-| `tray-geometry.py` | 启动时计算 KDE Wayland/XWayland 逐屏映射 |
-| `tray-icon.py` | 监听当前 prefix 托盘重绘并替换已识别黑块帧；校验窗口助手请求并显示最小化主窗口的托盘菜单 |
-| `titlebar-managed.c` / `.exe` | 常驻维护标题栏、阴影输入、任务栏恢复、托盘菜单/提示坐标、菜单关闭和左键激活 |
-| `status-font-probe.c` / `.exe` | 安装或诊断时读取/设置提示字体，不常驻 |
-| `ime-bridge.c` / `.so` | 转交 WeMail 或主程序所承载的跨进程 CEF 编辑器的 XIM 提交，随企业微信启动链加载 |
-| `verify-materials.py` | 只读校验安装包、组件和字体材料 |
-| `align-cef-memory.py` | 对已知 CEF 原件生成独立页对齐副本，不自动安装；需单独验收与备份 |
-| `install-wine-vprot-runtime.py` | 从已验证本地产物创建新的专用运行时，拒绝未知哈希和覆盖现有目录，不修改 prefix 或系统 Wine |
-| `configs/wine-vprot-runtime.sha256` | 启动器与运行时安装器共用的固定候选及系统依赖指纹，须和启动器配套更新 |
-| `package-cef-example.py` | 按厂商清单打包；默认完整 89 文件，`--cef-profile winetricks` 打包旧 78 文件，`--cef-profile wine-builtin` 打包当前 30 文件 |
-| [DLL 加载探针源码](examples/dll-overrides/loader-probe.c) | 独立验证 winecfg 加载顺序与 manifest 重定向；不随日常启动运行 |
+| launch-wecom.sh | 固定启动环境及加载顺序 |
+| prepare-startup.py | 在空闲 prefix 中备份已识别的失效共享锁 |
+| tray-geometry.py | 计算逐屏坐标映射 |
+| tray-icon.py | 修复托盘空白帧及最小化菜单的原生显示 |
+| titlebar-managed.c / .exe | 维护标题栏、任务栏、托盘菜单及聊天文件菜单 |
+| set-status-font.c / .exe | 设置提示字体，保留其他窗口参数 |
+| ime-bridge.c / .so | 转交嵌入式 CEF 编辑器的跨进程 XIM 提交 |
+| verify-materials.py | 只读校验正式材料 |
+| align-cef-memory.py | 为已知 CEF 原件生成页对齐副本 |
+| install-wine-vprot-runtime.py | 安装固定指纹的专用运行时 |
+| package-cef-example.py | 按组件清单生成本地归档 |
 
-启动器、启动检查、两个托盘脚本和窗口辅助程序安装到 prefix 的 `wecom-compat/scripts/`，DLL 覆盖列表在 `wecom-compat/configs/`。其余配置/清单属于已验证材料快照；注册表文件使用 UTF-16，交给 Wine `reg.exe import`。
-
-输入桥接模块使用 GCC 和 X11 开发头文件编译，不链接或替换 Wine 库。在仓库根目录执行：
+辅助文件安装到 prefix 的 `wecom-compat/`。重建输入桥接需要 GCC 和 X11 开发头文件；两个 EXE 需要 clang、lld 和 Wine 开发导入库。在仓库根目录执行：
 
 ```bash
 gcc -std=c11 -shared -fPIC -Wall -Wextra -Werror -O2 \
   scripts/ime-bridge.c -o /tmp/wecom-ime-bridge.so -ldl
 cp /tmp/wecom-ime-bridge.so scripts/ime-bridge.so
-```
 
-两个 EXE 均为附源码的小工具。重建需要 clang、lld 和 Wine 开发导入库，在仓库根目录执行：
-
-```bash
 clang --target=i686-pc-windows-msvc -ffreestanding -fno-stack-protector \
-  -c scripts/status-font-probe.c -o /tmp/wecom-status-font-probe.obj
+  -Wall -Wextra -Werror -c scripts/set-status-font.c -o /tmp/wecom-set-status-font.obj
 lld-link /entry:mainCRTStartup /subsystem:console /nodefaultlib /safeseh:no \
-  /out:scripts/status-font-probe.exe /tmp/wecom-status-font-probe.obj \
-  /usr/lib/wine/i386-windows/libkernel32.a /usr/lib/wine/i386-windows/libuser32.a \
-  /usr/lib/wine/i386-windows/libgdi32.a
+  /out:scripts/set-status-font.exe /tmp/wecom-set-status-font.obj \
+  /usr/lib/wine/i386-windows/libkernel32.a /usr/lib/wine/i386-windows/libuser32.a
 
 clang --target=i686-pc-windows-msvc -ffreestanding -fno-stack-protector \
   -Wall -Wextra -Wno-unused-parameter \
@@ -296,4 +200,4 @@ lld-link /entry:mainCRTStartup /subsystem:console /nodefaultlib /safeseh:no \
   /usr/lib/wine/i386-windows/libkernel32.a /usr/lib/wine/i386-windows/libuser32.a
 ```
 
-重建后按[更新步骤](#更新启动辅助文件)同步到已停止的环境，再验收实际行为。
+重建后通过辅助文件更新步骤同步到已停止的环境，再检查实际使用行为。

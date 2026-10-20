@@ -2,6 +2,7 @@
 /assets/
 /dist/
 /wecom-wine-diagnostics/
+/.local-debug/
 *.log
 *.dmp
 *.bak
@@ -13,5 +14,5 @@ __pycache__/
 
 # The two small, source-included Windows helpers are intentional.
 *.exe
-!/scripts/status-font-probe.exe
+!/scripts/set-status-font.exe
 !/scripts/titlebar-managed.exe

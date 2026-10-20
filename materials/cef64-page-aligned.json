@@ -1,7 +1,7 @@
 {
   "component": "5.0.79.5483",
-  "wecom": "5.0.11.6018",
-  "wine": "11.19",
+  "wecom": "5.0.12.6018",
+  "wine": "11.20",
   "architecture": "x86_64",
   "host_page_size": 4096,
   "source_sha256": "305967f575bc139b13975d080f620103993b65a6bbef9672c07d3f036743c59f",
@@ -9,7 +9,5 @@
   "source_bytes": 242389040,
   "output_bytes": 242440752,
   "signature": "invalidated; certificate directory cleared",
-  "status": "opt-in local transformation; isolated startup/pages passed; deployed to daily prefix with user-confirmed pages and routine Chinese input",
-  "verification_date": "2026-10-16",
-  "evidence": "../experiments/cef-memory/results.json"
+  "status": "normal-use deployment; known-source local transformation with fixed output hash"
 }

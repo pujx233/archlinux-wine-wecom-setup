@@ -1,10 +1,10 @@
 {
-  "verified_date": "2026-09-30",
-  "wine": "11.18",
-  "wecom": "5.0.11.6018",
+  "status": "normal-use",
+  "wine": "11.20",
+  "wecom": "5.0.12.6018",
   "installer": {
-    "path": "assets/WeCom_5.0.11.6018.exe",
-    "sha256": "a0db531b280f46da5b1ed93d47eca1c2649ceac9acb5433865534208608115f0"
+    "path": "assets/WeCom_5.0.12.6018.exe",
+    "sha256": "61ec2507ba8a579bfdb95c459da12d3d745b43f4f4c3e45fa87979410b6d1af1"
   },
   "cef": {
     "component": "5.0.79.5483",

@@ -25,7 +25,7 @@ parser.add_argument('--only', choices=('installer', 'cef', 'richedit', 'fonts'),
 parser.add_argument('--cef-profile', choices=('full', 'winetricks', 'wine-builtin'), default='full',
                     help='Expected CEF files: full=89, winetricks=78, wine-builtin=30; runtime configuration is checked separately')
 parser.add_argument('--cef-layout', choices=('vendor', 'page-aligned'), default='vendor',
-                    help='Vendor hashes by default; page-aligned accepts only the recorded experimental libcef.dll SHA256')
+                    help='Vendor hashes by default; page-aligned accepts only the recorded deployed libcef.dll SHA256')
 args = parser.parse_args()
 errors = []
 

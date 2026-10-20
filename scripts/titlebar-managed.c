@@ -43,6 +43,8 @@ API BOOL IsIconic(HANDLE);
 API HANDLE GetPropA(HANDLE,const char *);
 API HANDLE CreateFileA(const char *,DWORD,DWORD,void *,DWORD,DWORD,HANDLE);
 API HANDLE WindowFromPoint(POINT);
+API BOOL ScreenToClient(HANDLE,POINT *);
+API short GetAsyncKeyState(int);
 API HANDLE SetWindowsHookExA(int,long (__stdcall *)(int,unsigned,long),HANDLE,DWORD);
 API long CallNextHookEx(HANDLE,int,unsigned,long);
 API BOOL UnhookWindowsHookEx(HANDLE);
@@ -68,6 +70,7 @@ static HANDLE pending_activation;static DWORD activation_due;
 static HANDLE tracked_menu,menu_tray;static DWORD menu_opened_at,menu_external_since;
 static HANDLE pending_menu_restore;static DWORD menu_restore_due,menu_restore_deadline;
 static POINT menu_click;static int click_in_menu;
+static HANDLE pressed_context_menu;
 static char output[2048];static unsigned pos;
 static void text(const char *s){while(*s&&pos<sizeof(output)-64)output[pos++]=*s++;}
 static void hex(DWORD v){text("0x");for(int i=7;i>=0;i--)output[pos++]="0123456789abcdef"[(v>>(4*i))&15];}
@@ -353,6 +356,41 @@ static void correct_pending_popups(void){
         correct_tray_popup(w,&tooltip_rect,tooltip_point,1);
     }
 }
+static int is_context_menu(HANDLE w){
+    if(!is_wecom_menu(w)||!(GetWindowLongA(w,-20)&0x08000000)||
+       (GetWindowLongA(w,-16)&0x08000000)||is_tray_menu_group(w))return 0;
+    /* Only in-app no-activate menus rooted at this WeCom main window. */
+    for(unsigned depth=0;depth<16;depth++){
+        w=GetParent(w);
+        if(w==main_window)return 1;
+        if(!is_wecom_menu(w))return 0;
+    }
+    return 0;
+}
+static int forward_context_click(unsigned message,POINT point){
+    HANDLE w;
+    if(message==0x0201){
+        pressed_context_menu=0;
+        if(GetForegroundWindow()!=main_window)return 0;
+        w=WindowFromPoint(point);
+    }else if(message==0x0202){
+        w=pressed_context_menu;pressed_context_menu=0;
+        if(!w)return 0;
+        /* A menu command can close the popup on button-down. Consume its
+           paired release so it cannot click through into a new dialog. */
+        if(!is_context_menu(w))return 1;
+    }else return 0;
+    if(!is_context_menu(w)||!ScreenToClient(w,&point))return message==0x0202;
+    unsigned keys=(message==0x0201?1:0)|(GetAsyncKeyState(16)<0?4:0)|(GetAsyncKeyState(17)<0?8:0);
+    /* Under Wine/KWin, a hardware press activates DuiMenuWnd and dismisses
+       it before the command runs, despite WS_EX_NOACTIVATE. Direct client
+       messages preserve the original control's action without activation. */
+    if(PostMessageA(w,message,keys,((unsigned)point.y<<16)|((unsigned)point.x&0xffff))){
+        if(message==0x0201)pressed_context_menu=w;
+        return 1;
+    }
+    return message==0x0202;
+}
 static long __stdcall tray_mouse(int code,unsigned message,long data){
     if(code>=0&&data&&tracked_menu&&
        (message==0x0201||message==0x0204||message==0x0207||message==0x020b)){
@@ -362,6 +400,7 @@ static long __stdcall tray_mouse(int code,unsigned message,long data){
         EnumWindows(menu_contains_click,0);
         if(!click_in_menu)dismiss_tray_menu("outside click");
     }
+    if(code>=0&&data&&forward_context_click(message,*(POINT *)data))return 1;
     /* WH_MOUSE_LL runs in this watcher. Only an actual left-button release
        over this prefix's unique Wine tray icon may request activation. */
     if(code>=0&&message==0x0202&&data){

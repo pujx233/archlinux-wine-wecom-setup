@@ -1,10 +1,10 @@
 # 从零安装原生 Wine 企业微信
 
-目标为企业微信 5.0.11.6018 和原始 x64 Web 组件 5.0.79.5483。首次安装使用 Wine 11.18，后续启动与窗口修复在 Wine 11.19 下验证；这些是实测版本，不表示任意更新版本均兼容。详见[当前环境](README.md#当前环境)及[验证范围](verification-and-recovery.md#验证范围)。
+本页安装最新正常使用版本 **企业微信 5.0.12.6018 / 系统 Wine 11.20 / x64 CEF 5.0.79.5483**，与日常升级使用同一套正式修复。安装包及默认校验以 [versions.json](materials/versions.json) 为准，更新时同步本页与[应用配置](verification-and-recovery.md#应用版本与兼容配置)。
 
 本页用于**空 prefix 的安装**。已有环境只需更新辅助脚本时，使用[维护步骤](verification-and-recovery.md#更新启动辅助文件)，不要重新执行字体注册、DLL 替换或 prefix 初始化。以下新装示例使用独立的 `WeCom-rebuild` 路径，避免覆盖当前安装。
 
-本页采用当前已部署的 **30 文件 CEF + winetricks + Wine 内建覆盖** 方案，配置和独立试验证据见 [DLL 覆盖说明](examples/dll-overrides/README.md)。30 文件清单必须配合第 5 节的应用专用注册表配置；完整从零安装流程尚未重新验收。
+本页采用 **30 文件 CEF + 页对齐 + winetricks + Wine 内建覆盖** 方案，并配置字体、输入及窗口助手和表格文件关联。30 文件清单必须配合第 5 节的应用专用注册表配置。安装完成后按[使用检查](verification-and-recovery.md#使用检查)逐项确认。
 
 新装失败且尚未登录、没有用户数据时，可换一个空 prefix 重新安装。本页保存的原始组件和注册表备份供安装成功后的维护使用；已投入使用的环境需要撤销配置时，按[单项回退](verification-and-recovery.md#单项回退)处理。
 
@@ -20,18 +20,18 @@ KDE Wayland 下的托盘菜单与悬浮提示坐标修正另需 `kscreen-doctor`
 
 | 材料 | 本机已验证位置 | 需要留存的内容 |
 |---|---|---|
-| 安装程序 | `/home/<user>/Works/Download/WeCom_5.0.11.6018.exe` | 完整 EXE；SHA256 见 `materials/versions.json` |
+| 安装程序 | `/home/<user>/Works/Download/WeCom_5.0.12.6018.exe` | 完整 EXE；SHA256 见 `materials/versions.json` |
 | x64 CEF | 从匹配的腾讯客户端组件或已验证环境提取，按[本地准备步骤](examples/README.md#在本地准备-cef-示例素材)生成 | 30 个清单文件，第 5 节用 winetricks 提供另 11 个运行库，不只替换 `libcef.dll` |
 | x86 RichEdit | 第 7 节通过 `winetricks riched30` 安装 | Microsoft 5.30.23.1200；不需要事先下载单独 DLL |
 | 4 个中文字体 | Adobe 官方 Source Han Sans / Serif CN OTF，获取链接见[字体说明](materials/winetricks.md#字体安装) | Regular/Bold 共 4 个；西文字体在第 6 节用 winetricks 安装 |
 
-CEF 是企业微信自行下载的腾讯组件；本项目只提供获取说明和本地打包工具，不上传第三方二进制。精简归档按原厂商清单保留 30 个文件，不修改二进制。RichEdit 和字体也不打包；本页采用已在独立 prefix 验证的 winetricks 组合。验证范围和微软组件版本差异见[说明](materials/winetricks.md#独立验证与精简范围)。安装完成后，运行只依赖目标 prefix 内的文件。
+CEF 是企业微信自行下载的腾讯组件；本项目只提供获取说明和本地打包工具，不上传第三方二进制。精简归档按原厂商清单保留 30 个文件，不修改二进制；安装时再应用页对齐。RichEdit 和字体采用下述组件组合，选择原因见[运行库说明](materials/winetricks.md#cef-运行库配置)。安装完成后，运行只依赖目标 prefix 内的文件。
 
 将已取得的材料整理为以下结构，或在下方变量中填写自己的材料路径。`assets/` 已被 Git 忽略，不会随正常提交上传：
 
 ```text
 assets/
-├── WeCom_5.0.11.6018.exe
+├── WeCom_5.0.12.6018.exe
 ├── cef/                    30 文件的 x64 CEF 精简包
 └── fonts/                  4 个思源 CN OTF
 ```
@@ -44,7 +44,7 @@ set -euo pipefail
 
 export WECOM_SETUP="$PWD"
 export WECOM_PREFIX="$HOME/Works/Softwares/wine/WeCom-rebuild"
-export WECOM_INSTALLER="$WECOM_SETUP/assets/WeCom_5.0.11.6018.exe"
+export WECOM_INSTALLER="$WECOM_SETUP/assets/WeCom_5.0.12.6018.exe"
 export WECOM_CEF_SRC="$WECOM_SETUP/assets/cef"
 export WECOM_FONTS_SRC="$WECOM_SETUP/assets/fonts"
 
@@ -79,7 +79,7 @@ mkdir -- "$WECOM_BACKUP"
 wecom_winpath() { /usr/bin/winepath -w "$1"; }
 ```
 
-`winemenubuilder.exe=d` 禁用 Wine 自动生成桌面菜单，使用第 9 节的专用启动入口以加载完整配置。
+`winemenubuilder.exe=d` 禁用 Wine 自动生成桌面菜单，使用第 10 节的专用启动入口以加载完整配置。
 
 让新 prefix 的 Desktop、Documents 等目录各自独立，单独创建 Linux 启动入口：
 
@@ -102,7 +102,7 @@ PY
 ```bash
 /usr/bin/wine "$WECOM_INSTALLER" /S
 export WECOM_APP_DIR="$WECOM_PREFIX/drive_c/Program Files (x86)/WXWork"
-export WECOM_VERSION_DIR="$WECOM_APP_DIR/5.0.11.6018"
+export WECOM_VERSION_DIR="$WECOM_APP_DIR/5.0.12.6018"
 test -f "$WECOM_APP_DIR/WXWork.exe"
 test -d "$WECOM_VERSION_DIR/compatible_web"
 
@@ -113,17 +113,27 @@ test -d "$WECOM_VERSION_DIR/compatible_web"
 
 继续配置 Web 组件、Qt 嵌入和字体，再进行功能验收。
 
-## 4. 更换整套 64 位 Web 组件
+## 4. 配置 64 位 Web 组件与页对齐
 
 ```bash
 test ! -e "$WECOM_VERSION_DIR/compatible_web.x86-original"
 test ! -e "$WECOM_VERSION_DIR/compatible_web.x64-staged"
 cp -a -- "$WECOM_CEF_SRC" "$WECOM_VERSION_DIR/compatible_web.x64-staged"
+test ! -e "$WECOM_BACKUP/libcef.vendor.dll"
+cp -p -- "$WECOM_VERSION_DIR/compatible_web.x64-staged/libcef.dll" "$WECOM_BACKUP/libcef.vendor.dll"
+python3 "$WECOM_SETUP/scripts/align-cef-memory.py" \
+  --source "$WECOM_BACKUP/libcef.vendor.dll" \
+  --output "$WECOM_VERSION_DIR/compatible_web.x64-staged/libcef.page-aligned.dll"
+mv -- "$WECOM_VERSION_DIR/compatible_web.x64-staged/libcef.page-aligned.dll" \
+  "$WECOM_VERSION_DIR/compatible_web.x64-staged/libcef.dll"
+python3 "$WECOM_SETUP/scripts/verify-materials.py" --only cef \
+  --cef-profile wine-builtin --cef-layout page-aligned \
+  --cef-dir "$WECOM_VERSION_DIR/compatible_web.x64-staged"
 mv -- "$WECOM_VERSION_DIR/compatible_web" "$WECOM_VERSION_DIR/compatible_web.x86-original"
 mv -- "$WECOM_VERSION_DIR/compatible_web.x64-staged" "$WECOM_VERSION_DIR/compatible_web"
 ```
 
-替换的是整套 `WXWorkWeb.exe`、`libcef.dll`、配套 DLL、资源及 locales。主程序仍然是 x86；不需要替换主程序，不需要对这套 x64 DLL 打二进制补丁。目录名仍为 `compatible_web`。
+替换的是整套 `WXWorkWeb.exe`、`libcef.dll`、配套 DLL、资源及 locales，目录名仍为 `compatible_web`。主程序保持安装器提供的 x86 原件。页对齐工具仅重排已知 `libcef.dll` 的文件布局，保留代码及 RVA；其签名会失效，必须保留 `libcef.vendor.dll` 原件并按独立指纹校验。
 
 ## 5. 配置运行库及 Qt DPI
 
@@ -219,14 +229,27 @@ python3 "$WECOM_SETUP/scripts/verify-materials.py" --only richedit \
 
 ```bash
 /usr/bin/wine reg.exe export 'HKCU\Control Panel\Desktop\WindowMetrics' "$(wecom_winpath "$WECOM_BACKUP/window-metrics.reg")" /y
-/usr/bin/wine "$WECOM_SETUP/scripts/status-font-probe.exe" -set
+/usr/bin/wine "$WECOM_SETUP/scripts/set-status-font.exe"
 ```
 
 这个小工具通过 `SPI_GET/SETNONCLIENTMETRICS` 将 `lfStatusFont` 字体名改为 `Source Han Sans CN`，沿用原字号和字重并保存设置。对应键为 `HKCU\Control Panel\Desktop\WindowMetrics\StatusFont`，不是一个简单的字符串注册表值；工具和源码一同留存，避免手写错误的 LOGFONT 二进制数据。
 
-预期输出包含 `selected=思源黑体 CN`（或英文族名），`missing samples:` 后为空。仍需在下面完整停止并重启，让企业微信的提示控件重新创建。
+设置成功后输出 `StatusFont set to Source Han Sans CN.`。在下面完整停止并重启，让企业微信的提示控件重新创建。
 
-## 9. 启动与独立桌面入口
+## 9. 配置表格文件打开
+
+Linux 端安装 WPS 表格，并确认应用列表中有 `wps-office-et.desktop`。以下为当前正式配置；如果使用其他表格程序，将两条 `xdg-mime` 命令中的桌面文件名换成对应应用。宿主默认应用由这些命令设置，Wine 端仅把 xls/xlsx 交给宿主打开。
+
+```bash
+xdg-mime default wps-office-et.desktop application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+xdg-mime default wps-office-et.desktop application/vnd.ms-excel
+/usr/bin/wine reg.exe import "$(wecom_winpath "$WECOM_SETUP/configs/native-spreadsheet-open.reg")"
+/usr/bin/wine reg.exe query 'HKCR\WeCom.NativeSpreadsheet\shell\open\command' /reg:32
+```
+
+本页目标是空 prefix；已有环境应先检查并备份相关关联，再按[表格打开说明](verification-and-recovery.md#聊天文件菜单与原生表格打开)处理。文件菜单的另存为和复制由下一节安装的窗口助手修复。
+
+## 10. 启动与独立桌面入口
 
 将下面配套文件复制到 prefix，日常启动便不依赖仓库目录。启动器检查失效共享锁，启动托盘图标和窗口辅助程序，再加载输入桥接并运行企业微信。各文件职责见[辅助文件清单](verification-and-recovery.md#辅助文件维护)。
 
@@ -239,6 +262,7 @@ cp -- "$WECOM_SETUP/scripts/launch-wecom.sh" "$WECOM_SETUP/scripts/prepare-start
   "$WECOM_SETUP/scripts/ime-bridge.c" "$WECOM_SETUP/scripts/ime-bridge.so" \
   "$WECOM_SETUP/scripts/titlebar-managed.c" "$WECOM_PREFIX/wecom-compat/scripts/"
 cp -- "$WECOM_SETUP/configs/dll-overrides.txt" "$WECOM_SETUP/configs/wine-vprot-runtime.sha256" \
+  "$WECOM_SETUP/configs/native-spreadsheet-open.reg" \
   "$WECOM_PREFIX/wecom-compat/configs/"
 /usr/bin/wineserver -k
 /usr/bin/wineserver -w
@@ -247,7 +271,7 @@ bash "$WECOM_PREFIX/wecom-compat/scripts/launch-wecom.sh"
 
 启动脚本使用 `WECOM_PREFIX`，显式固定原生 Wine、中文区域设置及完整 DLL 覆盖列表，并启动标题栏维护工具；工具随主进程退出。首次登录在企业微信窗口中自行完成。
 
-可选的 [Wine 元数据内存修复](experiments/wine-vprot/README.md)需另外安装已验证的专用运行时；上面只复制校验清单，不下载或构建 Wine。不安装时仍使用系统 Wine；已有匹配运行时则自动选择，设置 `WECOM_VPROT_FIX=0` 可停用。不要为新装覆盖已运行的正式 prefix 或移入测试账号数据。
+当前使用系统 Wine 11.20，版本守卫停用仅适用于 11.19 的专用运行时。上面复制固定校验清单以保持启动器配置完整，不下载或构建 Wine。运行时选择见[维护说明](verification-and-recovery.md#wine-页保护元数据)。
 
 需要桌面图标时，在另一个终端创建一个**新名字**的 `.desktop`，不要覆盖已有入口。将示例中的 `<user>` 替换为真实用户名；Desktop Entry 不展开 `$HOME`，必须使用实际绝对路径：
 
@@ -264,4 +288,4 @@ StartupWMClass=wxwork.exe
 
 这个示例入口依赖 prefix 内 `wecom-compat/` 的文件；移动 prefix 后更新 `Exec`。原生 Wine 环境的 `WeCom-Native-Wine.desktop` 也使用这一布局。
 
-最后执行[验收清单](verification-and-recovery.md#验收清单)，覆盖页面、中文输入与提示、标题栏遮挡和激活、边缘缩放以及各屏幕托盘菜单和悬浮提示位置。材料校验通过不能代替实际功能验收。
+最后执行[使用检查](verification-and-recovery.md#使用检查)，确认页面、中文输入与提示、标题栏、任务栏和各屏幕托盘菜单正常。材料校验通过不能代替实际功能检查。
