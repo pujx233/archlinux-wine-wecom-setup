@@ -12,7 +12,8 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# The two small, source-included Windows helpers are intentional.
+# The small, source-included Windows helpers are intentional.
 *.exe
 !/scripts/set-status-font.exe
 !/scripts/titlebar-managed.exe
+!/scripts/gnome-popup-fix.exe

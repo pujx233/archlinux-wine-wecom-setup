@@ -54,3 +54,31 @@ cd archlinux-wine-wecom-setup
 | [examples/](examples/) | 桌面入口、正式源码索引及素材准备方法 |
 
 第三方 CEF、微软 DLL、字体和安装器不上传，也不通过 Release 分发；取得后放入 Git 忽略的 `assets/`。CEF 需从匹配客户端组件或已有环境提取。账号数据、原始日志和本地归档不随仓库分发。文档中的 `/home/<user>` 须替换为实际路径。
+
+## GNOME Wayland 弹窗适配
+
+在 Ubuntu 26.04、GNOME Wayland/XWayland、Wine 11.20 和企业微信 5.0.12.6018 上，
+右键菜单和联系人卡片可能只显示空框。下面两项是针对该环境的 workaround，
+尚未证明具体 Wine 或 Mutter 根因，也未覆盖所有弹窗及其他桌面环境。
+
+- `scripts/gnome-menu-fix.py` 隐藏匹配菜单的阴影，在约 100 ms 后重新映射菜单，因此会有短暂闪烁。
+  已通过右键菜单的剪切、粘贴实际操作；不代表所有菜单项均已验证。
+- `scripts/gnome-popup-fix.c` 给匹配的 `UserInfoWindow` 补主窗 owner，并执行
+  `FRAMECHANGED | NOACTIVATE`，将该卡片直接拥有的 `PerryShadowWnd` 装饰阴影 alpha 设为 0。
+  这会隐藏装饰阴影。已测试三个不同成员、再次悬浮和主窗最小化/恢复后重新打开，共五个新卡片窗口；
+  卡片正常显示且没有异常阴影，操作前后的前台窗口均保持主窗。尚未覆盖卡片内所有按钮和输入路径。
+
+启动器只在 GNOME Wayland 且存在 `DISPLAY` 时启用两项助手。菜单助手校验 `WECOM_PREFIX`、
+进程身份和窗口归属链；卡片助手在该 Wine prefix 内校验 `WXWork.exe` 主窗、进程句柄、
+卡片类型及直接阴影归属。两项各自保证每个 prefix 只有一个实例。主进程退出后会重新查找主进程，
+最多等待 120 秒，以覆盖自动重新登录；没有匹配进程则退出。
+
+设 `WECOM_GNOME_MENU_FIX=0` 或 `WECOM_GNOME_POPUP_FIX=0` 可分别关闭。
+日志位于 `$WECOM_PREFIX/wecom-gnome-menu.log` 和 `$WECOM_PREFIX/wecom-gnome-popup.log`。
+关闭开关影响下次启动；已经启动的助手应随该 prefix 一并停止。
+源码与编译后的助手一并提供，卡片助手可用 MinGW-w64 重新编译：
+
+```sh
+i686-w64-mingw32-gcc -std=c11 -O2 -Wall -Wextra -Werror scripts/gnome-popup-fix.c \
+  -o scripts/gnome-popup-fix.exe -luser32
+```

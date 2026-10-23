@@ -36,6 +36,17 @@ if [[ "${WECOM_TRAY_ICON_FIX:-1}" != 0 ]] && command -v python3 >/dev/null && [[
   python3 "$script_dir/tray-icon.py" --prefix "$WECOM_PREFIX" \
     </dev/null >>"$WECOM_PREFIX/wecom-tray-icon.log" 2>&1 &
 fi
+if [[ "${WECOM_GNOME_MENU_FIX:-1}" != 0 && "${XDG_SESSION_TYPE:-}" == wayland && -n "${DISPLAY:-}" &&
+      ":${XDG_CURRENT_DESKTOP:-}:" == *:GNOME:* ]] &&
+    command -v python3 >/dev/null && [[ -f "$script_dir/gnome-menu-fix.py" ]]; then
+  WECOM_PREFIX="$WECOM_PREFIX" python3 "$script_dir/gnome-menu-fix.py" \
+    </dev/null >>"$WECOM_PREFIX/wecom-gnome-menu.log" 2>&1 &
+fi
+if [[ "${WECOM_GNOME_POPUP_FIX:-1}" != 0 && "${XDG_SESSION_TYPE:-}" == wayland && -n "${DISPLAY:-}" &&
+      ":${XDG_CURRENT_DESKTOP:-}:" == *:GNOME:* ]] && [[ -f "$script_dir/gnome-popup-fix.exe" ]]; then
+  "${wine_env[@]}" "$wine_bin" "$script_dir/gnome-popup-fix.exe" \
+    </dev/null >>"$WECOM_PREFIX/wecom-gnome-popup.log" 2>&1 &
+fi
 if [[ "${WECOM_TITLEBAR_FIX:-1}" != 0 ]]; then
   test -f "$script_dir/titlebar-managed.exe"
   tray_geometry=""
